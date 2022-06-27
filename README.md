@@ -11,7 +11,7 @@ The tool consists of Network Module, Validate, Validate_services, Find_target, T
 
 The Script would take all the parameters shown below
 
-============================== Enter Info =========================================
+============================== Enter Info ======================================
 
 Source IP Address: 10.1.1.1
 
@@ -25,7 +25,7 @@ Protocol[TCP/UDP]: tcp
 
 Action [Permit/Deny]: permit
 
-===============================================================================
+================================================================================
 
 The given IP/Network addresses, Port/Service should be Validated before going further.
 After the Validation, discovery of network path of the IP will be taken care of.
@@ -129,11 +129,11 @@ Hostname: cork_router1
 
 Version: cisco nexus
 
-======================================== Writing output to File=================
+============================== Writing output to File ==========================
 
 cork_router01_22_5_2022_18_28_config.txt
 
-======================================== Backing up Current Config =============
+============================== Backing up Current Config =======================
 
 cork_router01_22_5_2022_18_28_backup.txt
 
