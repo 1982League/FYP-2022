@@ -3,52 +3,57 @@
 import socket
 
 class ValidateService():
-
+    """
+        This class gets service either from protocol name or number
+        :returns  Protocol/Service[PortNumber]
+    """
     def __init__(self, service, protocol):
-        
+        """Instantiation of the class,
+        :parameter: service or port number [0 - 65535]
+        :parameter: protocol[tcp/udp/ip/icmp]
+        :returns: Protocol/ServiceName[PortNumber]
+        """
         self.service = service
         self.protocol = protocol
 
-    
     def get_service(self):
-        """ Gets Port/Service checkes given parameter and returns the correct port and service"""
+        """ This method checks if the given service is number or string and checks for the service name and
+        portnumber by using socket """
+
         try:
             if self.service.strip().isdigit():
-    
+
                 self.service = int(self.service)
                 serviceName = socket.getservbyport(self.service, self.protocol)
                 self.service = str(self.service)
-                #print(f'{self.protocol.upper()}/{serviceName.upper()}[{self.service}]')
-                protocol = self.protocol
-                protocol = protocol.upper()
+                # print(f'{self.protocol.upper()}/{serviceName.upper()}[{self.service}]')
+                protocol = self.protocol.upper()
                 service = serviceName.upper()
                 port = self.service
                 return protocol, service, port
-                #return self.protocol.upper(), serviceName.upper(), self.service
-                #return serviceName
+                # return self.protocol.upper(), serviceName.upper(), self.service
+                # return serviceName
             else:
                 portNumber = socket.getservbyname(self.service, self.protocol)
                 portNumber = str(portNumber)
-                print(f'{self.protocol.upper()}/{self.service.upper()}[{portNumber}]')
-                protocol = self.protocol
-                protocol = protocol.upper()
+                # print(f'{self.protocol.upper()}/{self.service.upper()}[{portNumber}]')
+                protocol = self.protocol.upper()
                 service = self.service.upper()
                 port = portNumber
                 return protocol, service, port
-                #return  self.protocol.upper(), self.service.upper(), portNumber
-                #return str(portNumber)
+                # return  self.protocol.upper(), self.service.upper(), portNumber
+                # return str(portNumber)
         except OSError:
-           return '{OSError} Service not found!'
-        
+            return '{OSError} Service not found!'
 
     def get_port_number(self):
-        portNumber = self.get_service()
+        protocol, service, portNumber = self.get_service()
         return portNumber
 
     def get_service_name(self):
-        serviceName = self.get_service()
-        return serviceName.upper()
-    
+        protocol, serviceName, portNumber = self.get_service()
+        return serviceName
+
     def get_protocol(self):
-        self.protocol = self.protocol.upper()
-        return self.protocol
+        protocol, serviceName, portNumber = self.get_service()
+        return protocol.upper()

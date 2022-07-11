@@ -7,7 +7,7 @@ Network ACL Automation tool is designed to automate Network Access Control list 
 
 The tool consists of Network Module, Validate, Validate_services, Find_target, Telnet_check Clases and the main script for the tools.
 
-# acl_tool.py
+# acl_tool
 
 The Script would take all the parameters shown below
 
@@ -24,6 +24,8 @@ Destination Port: 22
 Protocol[TCP/UDP]: tcp
 
 Action [Permit/Deny]: permit
+
+
 
 ================================================================================
 
