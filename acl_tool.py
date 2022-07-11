@@ -1,19 +1,24 @@
 #!/usr/bin/python3
+# Author: Siddharth Joshi
+# Email: siddharth.joshi@mycit.ie
+# Final Year Project[2022]: MTU - MSc in Cybersecurity
+# Project Name: Automating Network Security through Adaptive Policy Driven Access Control
+
 import pyfiglet
-import socket
 from validate_addresses import Validate
 from validate_services import ValidateService
 from find_target import TargetIP
 from telnet_check import PortOpen
 from validate_policy import Policies
 from net_module import SSHLogin
+from telnet_module import Device
+from serial_conn_module import Serial_con
 import time
 import getpass
 from datetime import datetime
 
 banner= pyfiglet.figlet_format("Automating Network Security through Adaptive Policy Driven Access Control")
 print(banner)
-#print(" This Script takes the input from the user validates the IP Addresses and Ports\n & displays it!\n")
 
 acl_dict = {}
 acl_builder = []
@@ -281,11 +286,11 @@ elif option == "2" or option == "SSH" or option == "ssh":
     print("=" * 30 + f" Telneting to {target_ip} " + "="*20 +"\n")
     user = input("Username: ")
     password = getpass.getpass()
-    tnet = Telnet(target_ip, user, password)
+    tnet = Device(target_ip, user, password)
     tnet.read_until(b'Username: ')
-    tnet.write(self.username.encode() + b'\n')
+    tnet.write(user.encode() + b'\n')
     tnet.read_until(b'Password: ')
-    tnet.write(self.password.encode() + b'\n')
+    tnet.write(password.encode() + b'\n')
     cmd_list = ['show version', 'show ip int brief', 'show run int vlan', 'show ip access list']
     for cmd in cmd_list:
         tnet.write(cmd.encode + b"\n")
