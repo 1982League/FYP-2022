@@ -1,9 +1,7 @@
 #!/usr/bin/python3
 import ipaddress
-import os
 import sys
-from net_ssh_login import ip
-from netmodule import SSHLogin
+
 
 class Validate:
     """"This class is created for validation IP addresses entered by user
@@ -220,76 +218,7 @@ class Validate:
             print("{} is not a valid IPv4 Network Address".format(self.address))
             print("=" * 80)
 
-        def main():
 
-            args = sys.argv
-
-            if ("-i" in args) and len(args) <=2 :
-                    print("Check IP/Subnet Address")
-                    sys.exit()
-            elif ("-i" not in args):
-                print()
-                print("Invalid input Try Again!")
-                sys.exit()
-            try:
-                address = args[args.index("-i")+1]
-                sshmodule = SSHLogin(ip,'test','test')  # instantiating Class
-
-                print(address)
-                if "/" in address:
-                    sshmodule.network_check()
-                else:
-                    sshmodule.address_check()
-            except Exception as e:
-                print(f'{args}: {e}')
-                print("No address has been given, try again")
-                sys.exit()
-
-    def get_hostname_IP(self):
-        """ This method is used when hostname is given instead of IP address,
-            if the check_ip method is false which means IP is not provided
-            so storing the result from the h_name
-            splitting the result with space and storing it in host.
-            the last object is an IP in the list storing it in ip variable.
-        """
-        if (self.check_ip_address() == False):
-            h_name = os.popen("host " + self.ip).read()
-            host = h_name.split(" ")
-            self.ip = host[-1]
-            return self.ip
-        else:
-            return self.ip
-
-        def mtr_host(self):
-            """ mtr_host is to check the last host for given IP/Subnet,
-                storing the result of mtr to mtr_result, Splitting the mtr_result and storing into mtr
-                target_ip is the last hop before the host which is at -17, counter is for hop count.
-            """
-            mtr_result = os.popen("mtr -r " + self.ip).read()
-            mtr = mtr_result.split()
-            target_ip = mtr[-17]
-
-            counter = 1
-            for i in range(16, len(mtr), 9):
-                print("Hop " + str(counter) + ". " + mtr[i])
-                counter += 1
-            print("\nTarget IP: " + target_ip + "\n")
-
-        def ping_host(self):
-            """ Ping IP/Host: Checking for reachability of the Host, if we get a reply from the ip/host,
-                host is alive and if its not then host is not reachable.
-            """
-            reply = os.popen("ping -c 5 " + self.ip).read()
-            if "5 received" in reply:
-                print("=" * 90 + "\n")
-                print(self.ip + " is alive\n\n" + reply)
-                print("=" * 90 + "\n")
-                return True
-            else:
-                print("=" * 90 + "\n")
-                print(self.ip + " is not reachable\n")
-                print("=" * 90 + "\n")
-                return False
 """
 IP: 192.168.0.0/22
 ============================== IP Validations =========================

@@ -27,20 +27,23 @@ class ValidateService():
                 serviceName = socket.getservbyport(self.service, self.protocol)
                 self.service = str(self.service)
                 # print(f'{self.protocol.upper()}/{serviceName.upper()}[{self.service}]')
-                protocol = self.protocol.upper()
+                self.protocol = self.protocol.upper()
                 service = serviceName.upper()
                 port = self.service
-                return protocol, service, port
+                return self.protocol, service, port
                 # return self.protocol.upper(), serviceName.upper(), self.service
                 # return serviceName
             else:
+                if self.service is None:
+                    print("Service cant be empty")
+                    exit(1)
                 portNumber = socket.getservbyname(self.service, self.protocol)
                 portNumber = str(portNumber)
                 # print(f'{self.protocol.upper()}/{self.service.upper()}[{portNumber}]')
-                protocol = self.protocol.upper()
+                self.protocol = self.protocol.upper()
                 service = self.service.upper()
                 port = portNumber
-                return protocol, service, port
+                return self.protocol, service, port
                 # return  self.protocol.upper(), self.service.upper(), portNumber
                 # return str(portNumber)
         except OSError:
@@ -52,8 +55,8 @@ class ValidateService():
 
     def get_service_name(self):
         protocol, serviceName, portNumber = self.get_service()
-        return serviceName
+        return serviceName.upper()
 
     def get_protocol(self):
-        protocol, serviceName, portNumber = self.get_service()
-        return protocol.upper()
+        self.protocol, serviceName, portNumber = self.get_service()
+        return self.protocol.upper()

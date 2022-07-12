@@ -1,10 +1,8 @@
 #!/usr/bin/python3
-# Author: Siddharth Joshi
-# Email: siddharth.joshi@mycit.ie
-# Final Year Project[2022]: MTU - MSc in Cybersecurity
-# Project Name: Automating Network Security through Adaptive Policy Driven Access Control
+import sys
 
 import pyfiglet
+from colorama import Fore, Back, Style
 from validate_addresses import Validate
 from validate_services import ValidateService
 from find_target import TargetIP
@@ -12,28 +10,69 @@ from telnet_check import PortOpen
 from validate_policy import Policies
 from net_module import SSHLogin
 from telnet_module import Device
-from serial_conn_module import Serial_con
 import time
 import getpass
 from datetime import datetime
 
+"""
+-- ACL Tool --
+- This tool is designed to be used in any network, and developed in python3 
+- This tool will validate the ip address, network address
+- Tool will validate the Service name or Port number before proceeding further
+- The tool will find out if the given destination port is open for the destination address
+- It will check Network Access Policy and pull the policy
+- The tool will find out the network border interface and ip address
+- The tool will connect to the network device securely
+- The connection will return with Hostname and Network OS of the network device platform
+- It will execute the commands asynchronously as per the requirements
+- Tool will check IP route, VLAN Name, VLAN Information, Applied ACL name, Object Group Name
+- The tool will generate an ACL as per the given parameters and network platform
+- The tool will propose ACL configuration and Rollback Configuration in a text file, in the same directory of the tool
+- It will configure the Access Control List on the network interface from propose acl config
+- All the output will be stored in the Text file in the same directory as the tool
+- Rollback method can be used in case of any unplanned outage or misconfiguration
+"""
+
+""" Author Information """
+__author__ = "Siddharth Joshi"
+__email__ = "siddharth.joshi@mycit.ie"
+__project__ = "MTU - MSc in Cybersecurity"
+__ProjectName__ = "Automating Network Security through Adaptive Policy Driven Access Control"
+
+""" Project Banner print with some colour effects """
 banner= pyfiglet.figlet_format("Automating Network Security through Adaptive Policy Driven Access Control")
+print(Style.BRIGHT, Fore.GREEN)
 print(banner)
 
-acl_dict = {}
-acl_builder = []
+""" Tool Usage Instructions """
 
-print("=" * 30 + " Enter Info " + "=" * 35 + "\n")
+print(Fore.GREEN + '=' * 30 + ' ACL Tool Usage Instructions ' + '=' * 30)
+print(Fore.GREEN + '# \tEnter relevant information to allow source network to access\t\t\t\t\t\t#\n'
+                   '# \tresources from destination network with specific services\t\t\t\t\t\t\t#')
+print(Fore.GREEN + '# \tPlease enter Source IP Address or Network Address \t\t\t\t\t\t\t\t\t#')
+print(Fore.GREEN + '# \tPlease enter Destination IP Address or Network Address\t\t\t\t\t\t\t\t#')
+print(Fore.GREEN + '# \tPlease enter Source Port\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t#')
+print(Fore.GREEN + '# \tPlease enter Destination Port\t\t\t\t\t\t\t\t\t\t\t\t\t\t#')
+print(Fore.GREEN + '# \tPlease enter Protocol\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t#')
+print(Fore.GREEN + '# \tPlease enter the Action to be Taken for the given parameters\t\t\t\t\t\t#')
+print(Fore.GREEN + '# \tOPS ticket number, a text file will be created of the number, all the,\t\t\t\t#\n'
+                   '# \tinformation will be stored in the file, file will be located with the tool\t\t\t#')
+print("=" * 89 + "\n")
+print(Style.RESET_ALL)
+
+""" Getting Parameters from the user - User Request"""
+print("=" * 30 + " Enter Info " + "=" * 47 + "\n")
+
 src_add = input("Source IP Address: ")
 dst_add = input("Destination IP Address: ")
 src_port = input("Source Port: ")
 dst_port = input("Destination Port: ")
 protocol = input("Protocol[TCP/UDP]: ")
-action = input("Action [Permit/Deny]: ") 
-remark = input("Comment/[OPS ticket]: ")
+action = input("Action [Permit/Deny]: ")
+remark = input("OPS-Ticket [OPS-123654]: ")
 
-print("=" * 30 + " IP Validation " + "=" * 35 + "\n")
-
+""" Validating - User Request parameters - IP/Network Address"""
+print("=" * 30 + " IP Validation " + "=" * 44 + "\n")
 src = Validate(src_add)
 src_ip = src.address_check()
 ip_list=['Source IP:','CIDR:','Net Mask:','Private IP:']
@@ -44,14 +83,12 @@ if src_ip is None:
 else:
     for i, j in zip(ip_list,src_ip):
         print(i, j, sep=' ')
-    
     print("=" * 80)
 
-src_ip= src_ip[0]
 
+src_ip= src_ip[0]
 dst = Validate(dst_add)
 dst_ip = dst.address_check()
-
 ip_list=['Destination IP:','CIDR:','Net Mask:','Private IP:']
 
 if dst_ip is None:
@@ -61,50 +98,27 @@ else:
     for i, j in zip(ip_list,dst_ip):
         print(i, j, sep=' ')
 dst_ip=dst_ip[0]
-
 print("=" * 30 + " Service Info " + "=" * 35 + "\n")
 
+""" Validating Service - User Request parameters - Source """
 src_serv = ValidateService(src_port, protocol)
 src_serviceName = src_serv.get_service()
 src_service = src_serviceName[1]
 src_port = src_serviceName[2]
-print("Source Port: " +  protocol+"/"+src_service+"["+src_port+"]") #(str(src_serviceName))
+print("Source Port: " +  protocol.upper()+"/"+src_service+"["+src_port+"]") #(str(src_serviceName))
+
+""" Validating Service - User Request parameters - Destination """
 
 dst_serv = ValidateService(dst_port, protocol)
 dst_serviceName = dst_serv.get_service()
 dst_service = dst_serviceName[1]
 dst_port = dst_serviceName[2]
-print("Destination Port: " + protocol+"/"+dst_service+"["+dst_port+"]") #(str(dst_serviceName))
-
+print("Destination Port: " + protocol.upper()+"/"+dst_service+"["+dst_port+"]") #(str(dst_serviceName))
 dst_service_port = dst_service+"["+dst_port+"]"
 
-print()
-print("=" * 30 + " Sample ACL Builder - Cisco " + "=" * 25 + "\n")
-
-# Action Protocol SourceAddress SourcePort DestinationAddres eq DestinationPort
-acl_dict.update({'permission': action})
-acl_dict.update({'protocol': protocol})
-acl_dict.update({'source address': src_ip})
-acl_dict.update({'source port': src_serviceName})
-acl_dict.update({'destination address': dst_ip})
-acl_dict.update({'operator' : 'eq'})
-acl_dict.update({'destination port': dst_serviceName})
-# ACL Rule Builder
-acl_builder.insert(0, action)
-acl_builder.append(protocol)
-acl_builder.append('host/network')
-acl_builder.append(src_ip)
-acl_builder.append(src_serviceName[2])
-acl_builder.append('host/network')
-acl_builder.append(dst_ip)
-acl_builder.append('eq')
-acl_builder.append(dst_serviceName[2])
-# Making the ACL Rule with join
-print(' '.join(acl_builder))
-#print(acl_dict)
+""" Port check using Telnet for Destination IP Address and Port  """
 print()
 print("=" * 30 + " Connection Check for Port Open " + "=" * 20 + "\n")
-
 if not dst_port.isdigit():
     dst_srv = ValidateService(dst_port, protocol)
     dst_servi = dst_serv.get_service()
@@ -117,17 +131,18 @@ if portopen.is_open() and portopen.check_host():
     print(f'{dst_service_port} is open for {dst_ip}')
 else:
     print(f'{dst_service_port} is not open for {dst_ip}')
-                        
+
+""" Target IP - Network Boundary using MTR """
 print()
 print("="*30 + " Fetching Target IP Address " + "="* 20 + "\n")
-
 target_ip = TargetIP(dst_ip)
 ip = target_ip.get_target_ip()
 ip = ip.strip()
 print("Target IP: " + ip)
 
-print("=" * 30 + " Pulling Access Control Policy " + "="*22 + "\n")
+""" Policy Parsing/Policy Check with user request parameters """
 
+print("=" * 30 + " Pulling Access Control Policy " + "="*22 + "\n")
 pol_check = Policies(src_ip, src_port, dst_ip, dst_port, protocol, action)
 print()
 policy = pol_check.get_policy()
@@ -137,9 +152,8 @@ if policy is None:
     print("Please Contact Network Security to check the Policy")
 
 
+""" Prompting user for Login Option """
 print("\n" + "=" * 30 + " Choose SSH or Telnet for login " + "="*20 +"\n")
-
-
 login_option = (
     "1. SSH\n"
     "2. Telnet\n"
@@ -148,7 +162,7 @@ login_option = (
 )
 option = input(login_option)
 
-
+""" Instatiating Network Connection using SSH - DO NOT USE Telnet - it is Optional """
 if option == "1" or option == "SSH" or option == "ssh":
     print("=" * 30 + f" Sshing to {ip} " + "="*20 +"\n")
     start = time.time()
@@ -215,7 +229,6 @@ if option == "1" or option == "SSH" or option == "ssh":
         conn.current_config_backup()
         print(conn.current_config_backup())
         print("=" * 84 + "\n")
-
 
     elif 'cisco ios' in version:
         
