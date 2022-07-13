@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import sys
-
 import pyfiglet
 from colorama import Fore, Back, Style
 from validate_addresses import Validate
@@ -45,20 +44,40 @@ print(Style.BRIGHT, Fore.GREEN)
 print(banner)
 
 """ Tool Usage Instructions """
-
-print(Fore.GREEN + '=' * 30 + ' ACL Tool Usage Instructions ' + '=' * 30)
-print(Fore.GREEN + '# \tEnter relevant information to allow source network to access\t\t\t\t\t\t#\n'
-                   '# \tresources from destination network with specific services\t\t\t\t\t\t\t#')
-print(Fore.GREEN + '# \tPlease enter Source IP Address or Network Address \t\t\t\t\t\t\t\t\t#')
-print(Fore.GREEN + '# \tPlease enter Destination IP Address or Network Address\t\t\t\t\t\t\t\t#')
-print(Fore.GREEN + '# \tPlease enter Source Port\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t#')
-print(Fore.GREEN + '# \tPlease enter Destination Port\t\t\t\t\t\t\t\t\t\t\t\t\t\t#')
-print(Fore.GREEN + '# \tPlease enter Protocol\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t#')
-print(Fore.GREEN + '# \tPlease enter the Action to be Taken for the given parameters\t\t\t\t\t\t#')
-print(Fore.GREEN + '# \tOPS ticket number, a text file will be created of the number, all the,\t\t\t\t#\n'
-                   '# \tinformation will be stored in the file, file will be located with the tool\t\t\t#')
+print(Style.BRIGHT,Fore.GREEN)
+print('=' * 30 + ' ACL Tool Usage Instructions ' + '=' * 30)
+print('# \tEnter relevant information to allow source network to access\t\t\t\t\t\t#\n'
+      '# \tresources from destination network with specific services\t\t\t\t\t\t\t#')
+print('# \tPlease enter Source IP Address or Network Address \t\t\t\t\t\t\t\t\t#')
+print('# \tPlease enter Destination IP Address or Network Address\t\t\t\t\t\t\t\t#')
+print('# \tPlease enter Source Port\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t#')
+print('# \tPlease enter Destination Port\t\t\t\t\t\t\t\t\t\t\t\t\t\t#')
+print('# \tPlease enter Protocol\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t#')
+print('# \tPlease enter the Action to be Taken for the given parameters\t\t\t\t\t\t#')
+print('# \tOPS ticket number, a text file will be created of the number, all the,\t\t\t\t#\n'
+      '# \tinformation will be stored in the file, file will be located with the tool\t\t\t#')
 print("=" * 89 + "\n")
 print(Style.RESET_ALL)
+
+"""This works good in Network Automation Docker"""
+""" Tool Usage Instructions """
+"""
+print(Style.BRIGHT,Fore.GREEN)
+print('=' * 30 + ' ACL Tool Usage Instructions ' + '=' * 30)
+print('# \tEnter relevant information to allow source network to access\t\t\t#\n'
+      '# \tresources from destination network with specific services\t\t\t#')
+print('# \tPlease enter Source IP Address or Network Address \t\t\t\t#')
+print('# \tPlease enter Destination IP Address or Network Address\t\t\t\t#')
+print('# \tPlease enter Source Port\t\t\t\t\t\t\t#')
+print('# \tPlease enter Destination Port\t\t\t\t\t\t\t#')
+print('# \tPlease enter Protocol\t\t\t\t\t\t\t\t#')
+print('# \tPlease enter the Action to be Taken for the given parameters\t\t\t#')
+print('# \tOPS ticket number, a text file will be created of the number, all the,\t\t#\n'
+      '# \tinformation will be stored in the file, file will be located with the tool\t#')
+print("=" * 89 + "\n")
+print(Style.RESET_ALL)
+"""
+
 
 """ Getting Parameters from the user - User Request"""
 print("=" * 30 + " Enter Info " + "=" * 47 + "\n")
