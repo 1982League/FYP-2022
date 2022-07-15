@@ -1,0 +1,63 @@
+! Command: show running-config
+! device: CORE-S1 (vEOS-lab, EOS-4.26.5M)
+!
+! boot system flash:/vEOS-lab.swi
+!
+no aaa root
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model ribd
+!
+hostname CORE-S1
+!
+spanning-tree mode mstp
+!
+vlan 10,20,30,40
+!
+interface Ethernet1
+!
+interface Ethernet2
+   description Link to Dist-S2 Cisco vIOS l2
+   no switchport
+!
+interface Ethernet3
+   description Link to CORE-S2 on Eth3
+   no switchport
+   ip address 10.0.0.5/30
+!
+interface Ethernet4
+   switchport trunk allowed vlan 10,20,30,40
+   switchport mode trunk
+   no switchport
+   ip address 10.0.0.10/30
+!
+interface Ethernet5
+   switchport trunk allowed vlan 10,20,30,40
+   switchport mode trunk
+   no switchport
+   ip address 10.0.0.18/30
+!
+interface Ethernet6
+   switchport trunk allowed vlan 10,20,30,40
+   switchport mode trunk
+!
+interface Ethernet7
+!
+interface Ethernet8
+!
+interface Ethernet9
+!
+interface Ethernet10
+!
+interface Ethernet11
+!
+interface Ethernet12
+!
+interface Ethernet13
+!
+interface Management1
+!
+no ip routing
+!
+end

@@ -1,0 +1,58 @@
+! Command: show running-config
+! device: CORE-S2 (vEOS-lab, EOS-4.26.5M)
+!
+! boot system flash:/vEOS-lab.swi
+!
+enable password sha512 $6$xGRTL1xGUmQzxTnk$5HYVz9F4SIzFhqKfQa.630wPfB/L7NUs0Co6uLzBP0mFwyCnPQ5AmQeIBF2JE4cLckTDMqZrSqUT3/re1SU2u/
+no aaa root
+!
+username netlab privilege 15 secret sha512 $6$HQ00AnFyjMYtsZOp$Z9L6cNkrUmdV5TpdPiXKQgiFz/uFEOzM4W6EbCtrkvoh1W7DwAe6JpQagjXS/4JbpqeuQL6XQJxuuSlxRns33/
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model ribd
+!
+hostname CORE-S2
+!
+spanning-tree mode mstp
+!
+interface Ethernet1
+!
+interface Ethernet2
+!
+interface Ethernet3
+   description Link to CORE-S1 on Eth3
+   no switchport
+   ip address 10.0.0.6/30
+!
+interface Ethernet4
+   description link to Dist-S2 on Gi0/0
+   no switchport
+   ip address 10.0.0.14/30
+!
+interface Ethernet5
+   description Link to Dist-S1 on Gi0/1
+   no switchport
+   ip address 10.0.0.22/30
+!
+interface Ethernet6
+!
+interface Ethernet7
+!
+interface Ethernet8
+!
+interface Ethernet9
+!
+interface Ethernet10
+!
+interface Ethernet11
+!
+interface Ethernet12
+!
+interface Ethernet13
+!
+interface Management1
+!
+no ip routing
+!
+end

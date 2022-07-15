@@ -1,0 +1,61 @@
+IP Subnet Scheme
+
+Loopback 0  -  10.1.1.6
+VLAN 11   - Management        - 10.1.11.0/24 
+VLAN 10   - LAN Ground Floor - 10.1.10.1/24
+VLAN 20   - LAN First Floor     - 10.1.20.0/24 
+VLAN 30   - LAN 2nd Floor      - 10.1.30.0/24
+VLAN 55   - Printers               - 10.1.55.0/27
+VLAN 80   - Servers               - 10.1.80.0/24
+VLAN 100 - Utilities                - 10.1.1.128/25
+VLAN 700 - Wireless              - 10.1.70.0/25
+VLAN 800 - DMZ -                  - 10.1.250/28
+VLAN998  - Guest Network   - 192.168.2.0/24
+
+ Cisco vIOS L2 - Dist-S1 - 10.1.11.3
+Loopback 0  -  10.1.1.6
+
+Gi0/0 - Link to CORE-S1 - 10.0.0.9/30
+Gi0/1 - Link to CORE-S2 - 10.0.0.21/30
+Gi0/2 - Link to Dist-S2 - 10.0.0.1/30
+
+Trunk links to Access Swthes
+Gi1/0 - Link to Access S1 on Gi1/0
+Gi1/1 - Link to Access S2 on Gi1/1
+Gi1/2 - Link to Access S1 on Gi1/2
+
+VLAN 11   - Management        - 10.1.11.3/24 
+VLAN 10   - LAN Ground Floor - 10.1.10.1/24
+VLAN 20   - LAN First Floor     - 10.1.20.1/24 
+VLAN 30   - LAN 2nd Floor      - 10.1.30.1/24
+VLAN 55   - Printers               - 10.1.55.1/27
+VLAN 80   - Servers               - 10.1.80.1/24
+VLAN 100 - Utilities                - 10.1.1.129/25
+VLAN 700 - Wireless              - 10.1.70.1/25
+VLAN 800 - DMZ -                  - 10.1.250.1/28
+VLAN998  - Guest Network   - 192.168.2.1/24
+
+
+Cisco vIOS L2 - Dist-S2 - 10.1.11.4
+Loopback 0 - 10.1.1.7
+
+Gi0/0 - Link to CORE-S1 - 10.0.0.13/30
+Gi0/1 - Link to CORE-S2 - 10.0.0.17/30
+Gi0/2 - Link to Dist-S2 - 10.0.0.2/30
+
+Trunk links to Access Swthes
+Gi1/0 - Link to Access S1 on Gi1/0
+Gi1/1 - Link to Access S2 on Gi1/1
+Gi1/2 - Link to Access S1 on Gi1/2
+
+VLAN 11 - Management - 10.1.11.4/24
+VLAN 10 - LAN Ground Floor - 10.1.10.2/24
+VLAN 20 - LAN First Floor - 10.1.20.2/24
+VLAN 30 - LAN 2nd Floor - 10.1.30.2/24
+VLAN 55 - Printers - 10.1.55.2/27
+VLAN 80 - Servers - 10.1.80.2/24
+VLAN 100 - Utilities - 10.1.1.130/25
+VLAN 700 - Wireless - 10.1.70.2/25
+VLAN 800 - DMZ - - 10.1.250.2/28
+VLAN998 - Guest Network - 192.168.2.2/24
+

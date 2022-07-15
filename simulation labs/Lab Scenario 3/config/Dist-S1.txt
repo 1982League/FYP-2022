@@ -1,0 +1,289 @@
+Current configuration : 6368 bytes
+!
+! Last configuration change at 14:23:03 GMT Fri Jul 15 2022
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname Dist-S1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging userinfo
+enable password netlab
+!
+username netlab privilege 15 password 0 netlab
+no aaa new-model
+clock timezone GMT 1 0
+!
+!
+!
+!
+!
+vtp domain netlab
+vtp mode transparent
+!
+!
+!
+ip domain-name netlab.net
+ip name-server 8.8.8.8
+ip cef
+no ipv6 cef
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 10
+ name Ground Floor
+!
+vlan 11
+ name Management
+!
+vlan 20
+ name First Floor
+!
+vlan 30
+ name Second Floor
+!
+vlan 40
+!
+vlan 55
+ name Printers
+!
+vlan 80
+ name Server Vlan
+!
+vlan 100
+ name Utilities
+!
+vlan 700
+ name Wireless Network
+!
+vlan 800
+ name DMZ
+!
+vlan 900
+ name Guest Network
+!
+vlan 999
+ name Ghost
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.1.1.6 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description Link to CORE-S1 on E4
+ no switchport
+ ip address 10.0.0.9 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ description Link to CORE-S2 on E5
+ no switchport
+ ip address 10.0.0.21 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet0/2
+ description Link to Dist-S2 on Gi0/2
+ no switchport
+ ip address 10.0.0.1 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet0/3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/3
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet2/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet2/1
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet2/2
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet2/3
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/1
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/2
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/3
+ media-type rj45
+ negotiation auto
+!
+interface Vlan10
+ description Ground Floor DHCP IP Addresses
+ ip address 10.1.10.1 255.255.255.0
+!
+interface Vlan11
+ ip address 10.1.11.3 255.255.255.128
+!
+interface Vlan20
+ description First Floor DHCP IP Addresses
+ ip address 10.1.20.1 255.255.255.0
+!
+interface Vlan30
+ description Second Floor DHCP IP Addresses
+ ip address 10.1.30.1 255.255.255.0
+!
+interface Vlan55
+ description Printers
+ ip address 10.1.55.1 255.255.255.224
+!
+interface Vlan80
+ description Vlan for Internal Server
+ ip address 10.1.80.1 255.255.255.0
+!
+interface Vlan100
+ description Miscellaneous IP Addresses
+ ip address 10.1.1.129 255.255.255.128
+!
+interface Vlan700
+ description Wireless Access Point DHCP IP Addresses
+ ip address 10.1.70.1 255.255.255.128
+!
+interface Vlan800
+ description Demilitarize - Restricted Access
+ ip address 10.1.250.1 255.255.255.240
+!
+interface Vlan900
+ description Guest Network for external Users
+ ip address 192.168.100.1 255.255.255.0
+!
+interface Vlan999
+ description Ghost Network for unused port
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 10.1.1.6
+ passive-interface GigabitEthernet1/0
+ passive-interface GigabitEthernet1/1
+ passive-interface GigabitEthernet1/2
+ network 10.0.0.0 0.0.0.3 area 0
+ network 10.0.0.8 0.0.0.3 area 0
+ network 10.0.0.20 0.0.0.3 area 0
+ network 10.1.1.6 0.0.0.0 area 0
+ network 10.1.1.8 0.0.0.3 area 0
+ network 10.1.10.0 0.0.0.255 area 0
+ network 10.1.11.0 0.0.0.127 area 0
+ network 10.1.20.0 0.0.0.255 area 0
+ network 10.1.30.0 0.0.0.255 area 0
+ network 10.1.55.0 0.0.0.31 area 0
+ network 10.1.70.0 0.0.0.127 area 0
+ network 10.1.80.0 0.0.0.255 area 0
+ network 10.1.100.0 0.0.0.127 area 0
+ network 10.1.250.0 0.0.0.15 area 0
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip route 0.0.0.0 0.0.0.0 10.1.11.1
+ip route 0.0.0.0 0.0.0.0 10.1.11.2
+ip route 0.0.0.0 0.0.0.0 10.0.0.2
+!
+!
+!
+!
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+!
+line con 0
+line aux 0
+line vty 0 4
+ login local
+ transport input all
+!
+ntp server 188.168.3.28
+!
+end
