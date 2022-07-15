@@ -1,3 +1,5 @@
+* [Network Automation Lab](https://github.com/1982League/NetworkAutomationLabs)
+
 ### 1. Setting up GNS3
 To setup GNS3, we will need to Install VMWare Workstation Pro(Recommended).
 And we will need to download some of the Cisco Images to setup the labs.
@@ -23,5 +25,3 @@ from GNS3 marketplace.
 * [Download GNS3 Network Automation Docker](https://www.gns3.com/marketplace/appliances/network-automation)
 * [How to import Network Automation docker Appliance in GNS3](https://www.youtube.com/watch?v=qsXDZTPnlro)
 * [Network Automation appliance Setup & Configuration](https://www.youtube.com/watch?v=_iuz6x2vBSw&t=24s)
-
-* All Labs are Here: [Network Automation Lab](https://github.com/1982League/NetworkAutomationLabs)
