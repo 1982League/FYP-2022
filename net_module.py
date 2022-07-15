@@ -92,7 +92,7 @@ class SSHLogin:
             return 'cisco ios'
         elif 'junos' in version:
             return 'juniper junos'
-        elif 'fortigate' in ver_frt:
+        elif 'fortigate' in version:
             return 'fortinet'
         else:
             raise Exception("Network OS Version not found!")
@@ -193,6 +193,16 @@ class SSHLogin:
         """
         commands_output = self.conn.send_config_from_file(filename)
         return commands_output
+
+    def cisco_secure_network(self):
+        """ This method executes list of network security commands to secure router/switch/firewall
+                 :parameter: list of commands
+                 :returns: string output
+                 :platforms: cisco
+                 """
+        net_secure = self.conn.send_config_set(net_devices.common_cmnds['config']['network_security'], strip_command=False)
+        parsed_command = self.conn.send_config_set(net_devices.common_cmnds['config']['network_security'], use_textsm=True)
+        return net_secure, parsed_command
 
     def get_junos_uptime(self):
         uptime = self.conn.send_command(net_devices.junos['show']['uptime'], strip_command=False)

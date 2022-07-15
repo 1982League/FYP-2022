@@ -1,7 +1,7 @@
 {
  "ftp":{
     "ftp_policy": "FTP_Policy: FTP lacks security, lacks control and lack of reporting,all internal/external subnet should be deny access.",
-    "source_ip": "any_ip",
+    "source_ip": "10.1.20.0/24",
     "protocol": "tcp",
     "port": "20",
     "action": "deny",
@@ -9,7 +9,7 @@
   },
   "ssh": {
     "policy": "SSH_Policy: Secure Shell access can be permitted to only internal subnets.",
-    "source_ip": "10.1.11.0/24",
+    "source_ip": "10.1.11.0/24,10.1.20.0/24,10.1.30.0/24,10.1.80.0/24",
     "protocol": "tcp",
     "port": "22",
     "action": "permit",
@@ -37,7 +37,7 @@
     "protocol": "tcp",
     "port": "50",
     "action": "permit",
-    "destination_ip": "10.1.100.0/24, 10.1.200.0/24"
+    "destination_ip": "10.1.11.0/24, 10.1.81.0/24"
   },
   "dns": {
     "policy": "DNS_Policy: DNS requests are permitted for domain lookup.",
@@ -45,7 +45,7 @@
     "protocol": "tcp/udp",
     "port": "53",
     "action": "permit",
-    "destination_ip": "any_ip"
+    "destination_ip": "any"
   },
   "dhcp": {
     "policy": "DHCP_Policy: DHCP requests are permitted for internal corp infra.",
@@ -68,11 +68,11 @@
   },
   "http": {
     "policy": "HTTP_Policy: HTTP requests to dev is permitted for testing.",
-    "source_ip": "10.1.20.0/24",
+    "source_ip": "10.1.20.0/24,10.1.30.0/24,10.1.20.3, 10.1.30.3/24",
     "protocol": "tcp",
     "port": "80",
     "action": "permit",
-    "destination_ip": "10.1.80.0/24, 10.1.81.0/24"
+    "destination_ip": "10.1.80.0/24, 10.1.81.0/24,10.1.81.3, 10.1.80.3"
   },
   "pop3": {
     "policy": "POP3_Policy: Mail protocol allowed for emails.",
@@ -80,7 +80,7 @@
     "protocol": "tcp",
     "port": 110,
     "permission": "permit",
-    "destination_ip": "any_ip"
+    "destination_ip": "any"
   },
   "nntp": {
     "policy": "NNTP_Policy: Are allowed access.",
@@ -112,11 +112,11 @@
     "protocol": "tcp",
     "port": 443,
     "action": "permit",
-    "destination_ip": "10.1.100.0/24, 10.1.200.0/24"
+    "destination_ip": "10.1.81.0/24,10.1.80.0/24, 10.1.200.0/24"
   },
   "sql": {
     "policy": "SQL_Policy: Access permitted for specific Subnets.",
-    "source_ip": "10.1.30.0/16",
+    "source_ip": "10.1.0.0/8",
     "protocol": "tcp",
     "port": 3306,
     "action": "permit",
@@ -128,10 +128,10 @@
     "protocol": "tcp",
     "port": 3389,
     "action": "permit",
-    "destination_ip": "10.0.10.0/24"
+    "destination_ip": "10.0.20.0/24"
   },
   "dmz": {
-    "policy": "DMZ_Policy: Any DMZ Access request needs manual reviewed by CISO.",
+    "policy": "DMZ_Policy: Any DMZ Access request needs manual reviewed by CISO/SOC Team.",
     "source_ip": "any",
     "protocol": "tcp",
     "port": "any",

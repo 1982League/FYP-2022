@@ -14,7 +14,24 @@ common_cmnds = {
                           },
                  'run' : {
                              'config'          : 'show running-config'
-                         }
+                         },
+                 'config': {
+                            'network_security' : [
+                                                    "no ip directed-broadcast",
+                                                    "no service tcp-small-server",
+                                                    "no service udp-small-server",
+                                                    "no ip source-route",
+                                                    "no ip http-server",
+                                                    "no ip http secure-server",
+                                                    "no cdp enable",
+                                                    "no ip bootp server",
+                                                    "no boot network",
+                                                    "no service config"
+                                                ],
+
+
+
+                 }
                 }
 """
 Cisco Commands both IOS and NXOS
@@ -38,7 +55,62 @@ cisco_cmnds = {
                                }
              }
 
+"""
+Arista EOS Commands 
+to access keys  net_devices.arista_cmds.['show']['sysinfo']
+to access keys  net_devices.arista_cmds.['show']['sysinfo']
+to access keys  net_devices.arista_cmds.['show']['sysinfo']
+to access keys  net_devices.arista_cmds.['show']['sysinfo']
+"""
+arista_cmds = {
+            'show' :{
+                        'sysinfo'   : 'show system information',
+                        'uptime'    : 'show system uptime',
+                        'config'    : 'show configuration | display set',
+                        'bgp'       : 'show bgp summary',
+                        'interface' : 'show interfaces brief',
+                        'acl'       : 'show access-list'
+                    },
+            'set' : {
+                        'hostname'  : 'set system hostname ',    #hostname parameter needs to be provided
+                        'domain'    : 'set system domain-name ', #domain parameter needs to be provided
+                        'routing'   : 'edit routing-options',   #enable ip routing
+                        'service'   : 'set system services ssh' #setup ssh services
+                    }
+        }
 
+"""
+Arista EOS Commands 
+to access keys  net_devices.forti_cmds.['show']['sysinfo']
+to access keys  net_devices.forti_cmds.['show']['sysinfo']
+to access keys  net_devices.forti_cmds.['show']['sysinfo']
+to access keys  net_devices.forti_cmds.['show']['sysinfo']
+"""
+
+forti_cmds = {
+            'show' :{
+                        'sysinfo'   : 'show system information',
+                        'uptime'    : 'show system uptime',
+                        'config'    : 'show configuration | display set',
+                        'bgp'       : 'show bgp summary',
+                        'interface' : 'show interfaces brief',
+                        'acl'       : 'show access-list'
+                    },
+            'set' : {
+                        'hostname'  : 'set system hostname ',    #hostname parameter needs to be provided
+                        'domain'    : 'set system domain-name ', #domain parameter needs to be provided
+                        'routing'   : 'edit routing-options',   #enable ip routing
+                        'service'   : 'set system services ssh' #setup ssh services
+                    }
+        }
+
+"""
+Juniper Commands 
+to access keys  net_devices.junos_cmds.['show']['sysinfo']
+to access keys  net_devices.junos_cmds.['show']['sysinfo']
+to access keys  net_devices.junos_cmds.['show']['sysinfo']
+to access keys  net_devices.junos_cmds.['show']['sysinfo']
+"""
 junos = {
             'show' :{
                         'sysinfo'   : 'show system information',
