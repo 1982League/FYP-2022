@@ -25,7 +25,6 @@ Jinja2~=3.0.3
 pyparsing~=3.0.7
 transitions~=0.8.11
 pyserial~=3.5
-toml~=0.10.2
 textfsm~=1.1.2
 pyeapi~=0.8.4
 pynxos~=0.0.5
