@@ -24,4 +24,4 @@ from GNS3 marketplace.
 * [How to import Network Automation docker Appliance in GNS3](https://www.youtube.com/watch?v=qsXDZTPnlro)
 * [Network Automation appliance Setup & Configuration](https://www.youtube.com/watch?v=_iuz6x2vBSw&t=24s)
 
-* Labs: https://github.com/1982League/NetworkAutomationLabs
+* All Labs are Here: [Network Automation Lab](https://github.com/1982League/NetworkAutomationLabs)
