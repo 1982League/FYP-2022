@@ -1,0 +1,152 @@
+ISP1 
+Platform: Cisco - C3725 
+IOS Image: c3725-adventerprisek9-mz.124-15.T14.image
+Console type: telnet
+RAM: 256 MB
+I/O Memory: 5%
+Slot 0: GT96100-FE
+Slot 1: NM-1FE-TX
+Slot 2: NM - 4T
+Wic 0: WIC - 1T
+Wic 1: WIC - 2T
+System ID: FTX0945W0MY
+Base MAC: c201.1788.0000
+Exec area: 64MB 
+Username: netlab
+password: Netlab!12345
+
+Cork_Router01
+Platform: Cisco - C3725 
+IOS Image: c3725-adventerprisek9-mz.124-15.T14.image
+Console type: telnet
+RAM: 256 MB
+I/O Memory: 5%
+Slot 0: GT96100-FE
+Slot 1: NM-1FE-TX
+Slot 2: NM - 4T
+Wic 0: WIC - 1T
+Wic 1: WIC - 2T
+System ID: FTX0945W0MY
+Base MAC: c201.1788.0000
+Exec area: 64MB 
+Username: netlab
+password: Netlab!12345
+
+London_Router01
+Platform: Cisco - C3725 
+IOS Image: c3725-adventerprisek9-mz.124-15.T14.image
+Console type: telnet
+RAM: 256 MB
+I/O Memory: 5%
+Slot 0: GT96100-FE
+Slot 1: NM-1FE-TX
+Slot 2: NM - 4T
+Wic 0: WIC - 1T
+Wic 1: WIC - 2T
+System ID: FTX0945W0MY
+Base MAC: c201.1788.0000
+Exec area: 64MB 
+Username: netlab
+password: Netlab!12345
+
+Core_S1
+Platform: Cisco
+RAM: 1024 MB
+vCPUs: 2
+Console type: telnet
+Disk Image: vios_l2-adventerprisek9-m.03.2017.qcow2
+Disk interface: virtio
+Network Adapters: 16
+Type: Intel Gigabit Ethernet(e1000)
+Username: netlab
+password: Netlab!12345
+
+Core_S2
+Platform: Cisco
+RAM: 1024 MB
+vCPUs: 2
+Console type: telnet
+Disk Image: vios_l2-adventerprisek9-m.03.2017.qcow2
+Disk interface: virtio
+Network Adapters: 16
+Type: Intel Gigabit Ethernet(e1000)
+Username: netlab
+password: Netlab!12345
+
+TOR_S1
+Platform: Cisco
+RAM: 1024 MB
+vCPUs: 2
+Console type: telnet
+Disk Image: vios_l2-adventerprisek9-m.03.2017.qcow2
+Disk interface: virtio
+Network Adapters: 16
+Type: Intel Gigabit Ethernet(e1000)
+Username: netlab
+password: Netlab!12345
+
+TOR_S2
+Platform: Cisco
+RAM: 1024 MB
+vCPUs: 2
+Console type: telnet
+Disk Image: vios_l2-adventerprisek9-m.03.2017.qcow2
+Disk interface: virtio
+Network Adapters: 16
+Type: Intel Gigabit Ethernet(e1000)
+Username: netlab
+password: Netlab!12345
+
+TOR_S3
+Platform: Cisco
+RAM: 1024 MB
+vCPUs: 2
+Console type: telnet
+Disk Image: vios_l2-adventerprisek9-m.03.2017.qcow2
+Disk interface: virtio
+Network Adapters: 16
+Type: Intel Gigabit Ethernet(e1000)
+Username: netlab
+password: Netlab!12345
+
+TOR_S4
+Platform: Cisco
+RAM: 1024 MB
+vCPUs: 2
+Console type: telnet
+Disk Image: vios_l2-adventerprisek9-m.03.2017.qcow2
+Disk interface: virtio
+Network Adapters: 16
+Type: Intel Gigabit Ethernet(e1000)
+Username: netlab
+password: Netlab!12345
+
+Hub Switch
+Switch2
+Port: 8
+
+NetworkAutomation-1
+Linux
+
+ipterm3
+ipterm4
+ipterm5
+ipterm6
+ipterm7
+ipterm8
+ipterm9
+ipterm10
+ipterm11
+ipterm12
+ipterm13
+ipterm14
+ipterm15
+
+WordPress-1
+
+UbuntuServer-L TSServer01
+DNS-1
+
+
+
+
