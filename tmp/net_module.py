@@ -1,8 +1,5 @@
 #!/usr/bin/python3
-import json
 from netmiko import ConnectHandler
-from netmiko.ssh_exception import NetMikoAuthenticationException, NetMikoTimeoutException
-from paramiko.ssh_exception import SSHException
 import net_devices
 import ipaddress
 from napalm import get_network_driver

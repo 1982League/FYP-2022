@@ -1,7 +1,8 @@
 #!/usr/bin/python3
-
 import socket
+import logging
 
+logger = logging.getLogger(__name__)
 class ValidateService():
     """
         This class gets service either from protocol name or number
@@ -34,9 +35,6 @@ class ValidateService():
                 # return self.protocol.upper(), serviceName.upper(), self.service
                 # return serviceName
             else:
-                if self.service is None:
-                    print("Service cant be empty")
-                    exit(1)
                 portNumber = socket.getservbyname(self.service, self.protocol)
                 portNumber = str(portNumber)
                 # print(f'{self.protocol.upper()}/{self.service.upper()}[{portNumber}]')

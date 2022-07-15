@@ -2,6 +2,9 @@
 import ipaddress
 import sys
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Validate:
     """"This class is created for validation IP addresses entered by user
