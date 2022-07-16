@@ -158,8 +158,8 @@ with open(OpsTicketInfo, 'a') as f:
     src_service = src_serviceName[1]
     src_port = src_serviceName[2]
     print("Source Port: " +  protocol.upper()+"/"+src_service+"["+src_port+"]") #(str(src_serviceName))
-    f.write("Source Port: " +  protocol.upper()+"/"+src_service+"["+src_port+"]")
-    f.write("\n")
+    f.write("Source Port: " +  protocol.upper()+"/"+src_service+"["+src_port+"]" + "\n")
+
     """ Validating Service - User Request parameters - Destination """
     dst_serv = ValidateService(dst_port, protocol)
     dst_serviceName = dst_serv.get_service()
@@ -196,7 +196,7 @@ with open(OpsTicketInfo, 'a') as f:
     ip = target_ip.get_target_ip()
     ip = ip.strip()  #AttributeError: 'NoneType' object has no attribute 'strip'
     print("Target IP: " + ip)
-    f.write("Target IP: " + ip)
+    f.write("Target IP: " + ip + "\n")
 
     """ Policy Parsing/Policy Check with user request parameters """
     print("=" * 30 + " Pulling Access Control Policy " + "="*22 + "\n")
@@ -208,7 +208,11 @@ with open(OpsTicketInfo, 'a') as f:
     f.write(policy + "\n")
     print()
     if policy is None:
-        print(Style.BRIGHT,Fore.RED + "Please Contact Chief Security Officer to review the rquest!")
+        print(Style.BRIGHT,Fore.BLUE + "Please Contact Chief Security Officer to review the rquest!")
+        f.write("Please Contact Chief Security Officer to review the rquest!")
+        print(Style.RESET_ALL)
+    elif 'dmz' in policy:
+        print(Style.BRIGHT, Fore.RED + "Please Contact Chief Security Officer to review the rquest!")
         f.write("Please Contact Chief Security Officer to review the rquest!")
         print(Style.RESET_ALL)
 
