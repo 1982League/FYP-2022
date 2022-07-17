@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import os
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -10,9 +12,22 @@ class ACLGEN:
         returns: proposed config file, rollback config and config plan file
     """
 
-    proposed_config_output = 'acl_proposed.txt'
-    rollback_config_output = 'acl_rollback.txt'
-    combine_config_output  = 'acl_combine_config.txt'
+    now = datetime.now()
+    year = now.year
+    month = now.month
+    day = now.day
+    hour = now.hour
+    minute = now.minute
+
+    #proposed_config_output = os.path.join('/acl_rules/acl_proposed')
+    proposed_config_output = 'acl_proposed'
+    proposed_config_output =  f'{proposed_config_output}_{day}_{month}_{year}_{hour}_{minute}.txt'
+    #rollback_config_output = os.path.join('/acl_rules/acl_rollback')
+    rollback_config_output = 'acl_rollback'
+    rollback_config_output = f'{rollback_config_output}_{day}_{month}_{year}_{hour}_{minute}.txt'
+    #combine_config_output  = os.path.join('/acl_rules/acl_combine_config')
+    combine_config_output = 'acl_combine_config'
+    combine_config_output  =  f'{combine_config_output}_{day}_{month}_{year}_{hour}_{minute}.txt'
 
     def __init__(self, src_ip, dst_ip, src_port, dst_port, protocol, action):
         """
@@ -26,6 +41,7 @@ class ACLGEN:
         self.dst_port = dst_port
         self.protocol = protocol
         self.action = action
+
 
     def srcport(self):
         """
@@ -93,8 +109,9 @@ class ACLGEN:
         return ace
 
     def proposed_rule(self):
-        """ This method creates a file for ACE rule, ACL entry will be placed in the file
+        """ This method creates a file for AC Entry(ACE) rule, ACL entry will be placed in the file
          and be used to configure the ACL."""
+
         with open(self.proposed_config_output, 'w') as f:
             proposed_config = f.write(self.acl())
             return proposed_config
@@ -103,6 +120,7 @@ class ACLGEN:
         """ This method creates a rollback plan from the proposed config rule, which can be used to rollback
         configuration
             """
+
         with open(self.proposed_config_output, 'r') as cnf:
             rule = cnf.readline()
             rule = rule.strip()
@@ -116,6 +134,7 @@ class ACLGEN:
     def file_combine(self):
         """ This method creates a full config plan with proposal and the rollback plan,
          which can later be used for auditing purpose and change tracking.  """
+
         with open(self.proposed_config_output) as f1:
             file1 = f1.readline()
         with open(self.rollback_config_output) as f2:
@@ -128,9 +147,9 @@ class ACLGEN:
             f.write("Rollback Config: \n")
             f.write("================ \n")
             output = f.write(file2)
-        #with open(self.combine_config_output, 'r') as fr:
-        #    readfile = fr.read()
-        #    print(readfile)
+        with open(self.combine_config_output, 'r') as fr:
+            readfile = fr.read()
+            print(readfile)
 
         return output
 
@@ -138,9 +157,20 @@ class ACLGEN:
 class CISCO(ACLGEN):
     """ Cisco child class
     """
-    proposed_config_output = 'cisco_proposed.txt'
-    rollback_config_output = 'cisco_rollback.txt'
-    combine_config_output = 'cisco_combine_config.txt'
+    now = datetime.now()
+    year = now.year
+    month = now.month
+    day = now.day
+    hour = now.hour
+    minute = now.minute
+
+    proposed_config_output = os.path.join('/acl_rules/cisco_proposed.txt')
+    proposed_config_output = f'{proposed_config_output}_{day}_{month}_{year}_{hour}_{minute}.txt'
+    rollback_config_output = os.path.join('/acl_rules/cisco_rollback.txt')
+    rollback_config_output = f'{rollback_config_output}_{day}_{month}_{year}_{hour}_{minute}.txt'
+    combine_config_output = os.path.join('/acl_rules/cisco_combine_config.txt')
+    combine_config_output= f'{combine_config_output}_{day}_{month}_{year}_{hour}_{minute}.txt'
+
 
     def __init__(self, src_ip, dst_ip, src_port, dst_port, protocol, action):
         super().__init__(src_ip, dst_ip, src_port, dst_port, protocol, action)
@@ -148,9 +178,9 @@ class CISCO(ACLGEN):
 class ARISTA(ACLGEN):
     """ Arista child class
         """
-    proposed_config_output = 'arista_proposed.txt'
-    rollback_config_output = 'arista_rollback.txt'
-    combine_config_output  = 'arista_combine_config.txt'
+    proposed_config_output = os.path.join('/acl_rules/arista_proposed.txt')
+    rollback_config_output = os.path.join('/acl_rules/arista_rollback.txt')
+    combine_config_output  = os.path.join('/acl_rules/arista_combine_config.txt')
 
     def __init__(self, src_ip, dst_ip, src_port, dst_port, protocol, action):
         super().__init__(src_ip, dst_ip, src_port, dst_port, protocol, action)

@@ -36,7 +36,6 @@ class Policies:
                                                                           access_policies['ftp']['source_ip']) and (
                         self.protocol in access_policies['ftp']['protocol']) and (
                         self.action in access_policies['ftp']['action']):
-
                     pol_dict['ftp'] = access_policies['ftp']
                     return pol_dict
 

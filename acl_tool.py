@@ -9,6 +9,7 @@ from lib.telnet_check import PortOpen
 from lib.validate_policy import Policies
 from lib.net_module import SSHLogin
 from lib.telnet_module import Device
+from lib.aclgen import ACLGEN
 from lib.nplm_net_module import NETCONN
 import time
 import getpass
@@ -99,6 +100,7 @@ hour = now.hour
 minute = now.minute
 OpsTicketInfo = f'{OPS_Ticket}_{day}_{month}_{year}_{hour}_{minute}.txt'
 
+"""Creating a ticket file to store information with day_month_year_hour_minute to distinguish requests"""
 with open(OpsTicketInfo, 'a') as f:
     print("=" * 30 + " " + OpsTicketInfo+ " Created " + "=" * 20 + "\n")
     f.write("=" * 30 + " " + OpsTicketInfo+ " Created " + "=" * 20 + "\n")
@@ -215,6 +217,8 @@ with open(OpsTicketInfo, 'a') as f:
         print(Style.BRIGHT, Fore.RED + "Please Contact Chief Security Officer to review the rquest!")
         f.write("Please Contact Chief Security Officer to review the rquest!")
         print(Style.RESET_ALL)
+
+
 
     """ Prompting user for Login Option """
     print("\n" + "=" * 30 + " Choose SSH or Telnet for login " + "="*20 +"\n")
@@ -392,6 +396,12 @@ with open(OpsTicketInfo, 'a') as f:
         else:
             print("Version Not found, Please check the device!!")
 
+        rule = ACLGEN(src_ip, dst_ip, src_port, dst_port, protocol, action)
+        rule.acl()
+        rule.proposed_rule()
+        rule.rollback_rule()
+        rule.file_combine()
+
         print(f'Closing connection {ip}')
         f.write(f'Closing connection {ip}')
         conn.close_connection()
@@ -442,11 +452,13 @@ def help():
     #The Help is to guide a user how to use the script.
 
     print("===================================== Help ===============================================")
-    print("For Help: ./ssh_login.py and hit enter ")  # if you dont enter any sys args the help is going to be called
-    print("Usage of Script: python3 ssh_login.py -i 10.58.32.163")  # example usage for Script
-    print("./ssh_login.py -i 10.60.32.103")
-    print("./ssh_login.py -i lax1-r3ree-hl02.network.cloud.blizzard.net")
-    print("./ssh_login.py -i ams1-c6k-switch.battle.net")
-    print("./ssh_login.py -i 10.105.5.1")
-    print("=" * 90 + "\n")
+    print("For Help: ./acl_tool")  # if you dont enter any sys args the help is going to be called
+    print("Usage of Script: python3 ./acl_tool")  # example usage for Script
+    print("Source IP Address: 10.1.20.1")
+    print("Destination IP Address: 10.1.30.1" )
+    print("Source Port: any")
+    print("Destination Port: 80 ")
+    print("Protocol[TCP/UDP]: tcp")
+    print("Action [Permit/Deny]: permit")
+    print("OPS Ticket [OPS-135975]: OPS-453687")
 
