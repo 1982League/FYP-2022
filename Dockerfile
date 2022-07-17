@@ -14,8 +14,6 @@ RUN apt update && \
     apt install -y vim python3-pip && \
     apt-get install -y build-essential libssl-dev libffi-dev software-properties-common git && apt-get clean
 
-RUN python3 -m pip install cryptography paramiko netmiko ipaddress napalm pyntc pytest capirca
-
 WORKDIR /opt/
 
 RUN git clone https://github.com/1982League/FYP-2022.git
@@ -30,4 +28,4 @@ RUN chmod +x *.py
 
 RUN chmod +x *.sh
 
-RUN setup.sh
+RUN ./setup.sh
