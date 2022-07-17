@@ -1,0 +1,1 @@
+no permit tcp 10.10.20.1 any 10.10.21.1 eq 80
