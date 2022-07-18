@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from napalm import get_network_driver
+from colorama import Fore, Style
 import json
 import logging
 
@@ -95,7 +96,7 @@ class NETCONN:
         result = self.dumpoutput(output)
         return result
 
-    def get_network_instances_info():
+    def get_network_instances_info(self):
         output = self.npconn.get_lldp_network_instances()
         result = self.dumpoutput(output)
         return result
@@ -238,7 +239,44 @@ class NETCONN:
         else:
             print("Changes discarded")
             self.discard_config()
-    
+
+    def merge_proposed_config(self, backupConfigFile, proposedConfig):
+        """ This method rollbacks the config to the previous config file just in case of misconfiguration.
+                         Needs testing in dev environment.
+                         NOT TO BE USED IN PROD.
+                        """
+        print("=" * 25 + f" Accessing {self.ip} " + "=" * 30 + "\n")
+        self.npconn.load_replace_candidate(backupConfigFile)
+        merge = self.npconn.load_merge_candidate(proposedConfig)
+        diff = self.npconn.compare_config()
+        print("=" * 25 + f" Comparing the Config " + "=" * 31 + "\n")
+        if len(diff) > 0:
+            print(diff)
+            answer = input(Fore.GREEN + 'Do you want to Commit changes?[yes|no] ')
+            if answer == 'yes':
+                print(f'Configuration has been committed on {self.ip}.')
+                self.npconn.commit_config()
+                print('Done!!\n' + Style.RESET_ALL)
+                print("=" * 80 + "\n")
+            else:
+                print(f'No configuration changes were committed on {self.ip}.')
+                self.npconn.discard_config()
+
+    def config_rollback(self, network_os, configfile):
+        """ This method rollbacks the config to the previous config file just in case of misconfiguration.
+         Needs testing in dev environment.
+         NOT TO BE USED IN PROD.
+        """
+        answer = input(Fore.RED + 'Do you want to rollback the changes?[yes|no] ')
+        if answer == 'yes':
+            print("=" * 25 + f" Rolling Back config " + "=" * 33 + "\n")
+            self.npconn.rollback()
+            diff = self.npconn.compare_config()
+            print(Fore.CYAN + diff + Style.RESET_ALL + "\n")
+            print(Fore.GREEN + 'Done!')
+
+        print("=" * 25 + f" Closing Conn {self.ip} " + "=" * 28 + "\n")
+        self.npconn.close()
 
 
     

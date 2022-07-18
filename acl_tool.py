@@ -2,6 +2,7 @@
 import sys
 import pyfiglet
 from colorama import Fore, Style
+from netmiko.ssh_exception import NetMikoAuthenticationException, SSHException, NetMikoTimeoutException
 from lib.validate_addresses import Validate
 from lib.validate_services import ValidateService
 from lib.find_target import TargetIP
@@ -9,8 +10,7 @@ from lib.telnet_check import PortOpen
 from lib.validate_policy import Policies
 from lib.net_module import SSHLogin
 from lib.telnet_module import Device
-from lib.aclgen import ACLGEN
-from lib.nplm_net_module import NETCONN
+from aclgen import ACLGEN
 import time
 import getpass
 from datetime import datetime
@@ -106,7 +106,7 @@ with open(OpsTicketInfo, 'a') as f:
     f.write("=" * 30 + " " + OpsTicketInfo+ " Created " + "=" * 20 + "\n")
     print(Style.BRIGHT, Fore.CYAN + "All the operational data will be appended to the file for "
                                     "tracking and auditing purpose.\n" + Style.RESET_ALL)
-    f.write(OpsTicketInfo + "All the operational data will be appended to the file for "
+    f.write(OpsTicketInfo + "\nAll the operational data will be appended to the file for "
                             "tracking and auditing purpose.\n")
 
     f.write("=" * 30 + " User Request " + "=" * 47 + "\n")
@@ -210,15 +210,13 @@ with open(OpsTicketInfo, 'a') as f:
     f.write(policy + "\n")
     print()
     if policy is None:
-        print(Style.BRIGHT,Fore.BLUE + "Please Contact Chief Security Officer to review the rquest!")
-        f.write("Please Contact Chief Security Officer to review the rquest!")
+        print(Style.BRIGHT,Fore.BLUE + "Please Contact Chief Security Officer to review the request!")
+        f.write("Please Contact Chief Security Officer to review the request!")
         print(Style.RESET_ALL)
     elif 'dmz' in policy:
-        print(Style.BRIGHT, Fore.RED + "Please Contact Chief Security Officer to review the rquest!")
-        f.write("Please Contact Chief Security Officer to review the rquest!")
+        print(Style.BRIGHT, Fore.RED + "Please Contact Chief Security Officer to review the request!")
+        f.write("Please Contact Chief Security Officer to review the request!")
         print(Style.RESET_ALL)
-
-
 
     """ Prompting user for Login Option """
     print("\n" + "=" * 30 + " Choose SSH or Telnet for login " + "="*20 +"\n")
@@ -248,7 +246,20 @@ with open(OpsTicketInfo, 'a') as f:
         f.write("Username: " + user + "\n")
         password = getpass.getpass()
 
-        conn = SSHLogin(ip, user, password)
+        try:
+            conn = SSHLogin(ip, user, password)
+        except NetMikoAuthenticationException:
+            print(Fore.RED + "=" * 89)
+            print(f'Authentication failed on {ip}, please check your username and password.\n')
+            print(Style.RESET_ALL)
+        except NetMikoTimeoutException:
+            print(Fore.RED + "=" * 89)
+            print(f'{ip} is not reachable, check your network connection!! \n')
+            print(Style.RESET_ALL)
+        except SSHException:
+            print(Fore.RED + "=" * 89)
+            print(f'SSH is not enabled on {ip}, please configure SSH!\n')
+            print(Style.RESET_ALL)
 
         hostname = conn.get_hostname_ip()
         print("Hostname: " + conn.hostname)
@@ -318,21 +329,22 @@ with open(OpsTicketInfo, 'a') as f:
 
         elif 'cisco ios' in version:
 
-            #search_ip = '10.105.5.1'
             print(conn.get_ip_route(src_ip))
             print("=" * 89 + "\n")
             f.write(conn.get_ip_route(src_ip))
             f.write("=" * 89 + "\n")
 
-            var_cmd = 'show tcam counts detail ip'
+            vlan_name = conn.get_vlan_info()
+            print(vlan_name)
+            f.write(vlan_name)
 
-            vlan_name = 'Vlan4'     #10.58.32.1 vlan444
             print(conn.get_vlan_config(vlan_name))
             f.write(conn.get_vlan_config(vlan_name) + "\n")
             print("=" * 89 + "\n")
             f.write("=" * 89 + "\n")
 
-            acl_name = 'BNET-GAMING'
+            acl_name = conn.get_acl_name()
+            f.write(acl_name + "\n")
             print(conn.get_acl_config(acl_name))
             f.write(conn.get_acl_config(acl_name))
             print("=" * 89 + "\n")
@@ -341,11 +353,10 @@ with open(OpsTicketInfo, 'a') as f:
             print("=" * 40 + " NAPALM Testing " + "="* 28 + "\n")
             f.write("=" * 40 + " NAPALM Testing " + "="* 28 + "\n")
             nos = 'ios'
-            print(conn.config_rollback(nos)) #testing get_interfaces
+            print(conn.config_rollback(nos))
             f.write(conn.config_rollback(nos) + "\n")
             print("=" * 89 + "\n")
-
-            print(conn.var_commands(var_cmd))
+            #print(conn.var_commands(var_cmd))
 
             print("=" * 40 + " Writing output to File " + "="* 20 + "\n")
             output = conn.get_object_groups()
@@ -354,12 +365,39 @@ with open(OpsTicketInfo, 'a') as f:
 
             print("=" * 40 + " Backing up Current Config " + "="* 17 + "\n")
             f.write("=" * 40 + " Backing up Current Config " + "="* 17 + "\n")
+            current_config_backup = conn.current_config_backup()
+
             conn.current_config_backup()
             f.write(conn.current_config_backup() + "\n")
             print(conn.current_config_backup())
             f.write(conn.current_config_backup()+ "\n")
             print("=" * 89 + "\n")
             f.write("=" * 89 + "\n")
+
+            print("=" * 40 + " Generating ACL " + "="* 40 + "\n")
+            f.write("=" * 40 + " Generating ACL " + "="* 40 + "\n")
+            gen = ACLGEN(src_ip,src_port,dst_ip,dst_port,protocol,action)
+            gen.acl()
+            f.write(gen.acl() + "\n")
+            proposed_acl = gen.proposed_rule()
+            rollback_acl = gen.rollback_rule()
+            gen.file_combine()
+            f.write(gen.file_combine() + "\n")
+
+            config_acl = input("Do you want to configure proposed ACL [yes|no]? ")
+            if config_acl == 'yes':
+                print("=" * 40 + " Configuring ACL " + "="* 40 + "\n")
+                conn.send_config_list(proposed_acl)
+                rollback = ("Do you want to rollback the config [yes|no]?")
+                if rollback == 'yes':
+                    conn.send_config_list(rollback_acl)
+                    print(Fore.RED +"ACL Configuration is removed.." + Style.RESET_ALL)
+                else:
+                    print("You have chose not to rollback the ACL config!!")
+            else:
+                print("=" * 40 + " No ACL is configured " + "="* 40 + "\n")
+
+
         elif 'juniper junos' in version:
 
             print("=" * 89 + "\n")

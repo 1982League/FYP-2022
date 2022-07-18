@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import json
 from netmiko import ConnectHandler
-from netmiko.ssh_exception import NetMikoAuthenticationException, NetMikoTimeoutException
-from paramiko.ssh_exception import SSHException
+from colorama import Fore, Style
+from netmiko.ssh_exception import NetMikoAuthenticationException, SSHException, NetMikoTimeoutException
 from lib import net_devices
 import ipaddress
 from napalm import get_network_driver
@@ -34,7 +34,21 @@ class SSHLogin:
         self.user = user
         self.password = password
         self.net_device = {'device_type': 'cisco_ios', 'ip': self.ip, 'username': self.user, 'password': self.password}
-        self.conn = ConnectHandler(**self.net_device)
+        try:
+            self.conn = ConnectHandler(**self.net_device)
+        except NetMikoAuthenticationException:
+            print(Fore.RED + "=" * 89)
+            print(f'Authentication failed on {ip}, please check your username and password.\n')
+            print(Style.RESET_ALL)
+        except NetMikoTimeoutException:
+            print(Fore.RED + "=" * 89)
+            print(f'{ip} is not reachable, check your network connection!! \n')
+            print(Style.RESET_ALL)
+        except SSHException:
+            print(Fore.RED + "=" * 89)
+            print(f'SSH is not enabled on {ip}, please configure SSH!\n')
+            print(Style.RESET_ALL)
+
         self.version = self.check_ios()
         self.hostname = self.conn.find_prompt().strip('#')
 
@@ -250,24 +264,53 @@ class SSHLogin:
             f.write(config)
         return filename
 
-    def config_rollback(self, network_os):
+    def get_interface_info(self, network_os):
+        """ This method is used to get detailed information of Network Interfaces using NAPALM
+        """
+        driver = get_network_driver(network_os)
+        nos = driver(hostname=self.ip, username=self.user, password=self.password)
+        nos.open()
+        output = nos.get_interfaces()
+        dump = json.dumps(output, indent=4)
+        return dump
+
+    def merge_proposed_config(self, backupConfigFile, proposedConfig):
+        """ This method rollbacks the config to the previous config file just in case of misconfiguration.
+                         Needs testing in dev environment.
+                         NOT TO BE USED IN PROD.
+                        """
+        print("=" * 25 + f" Accessing {self.ip} " + "=" * 30 + "\n")
+        self.npconn.load_replace_candidate(backupConfigFile)
+        merge = self.npconn.load_merge_candidate(proposedConfig)
+        diff = self.npconn.compare_config()
+        print("=" * 25 + f" Comparing the Config " + "=" * 31 + "\n")
+        if len(diff) > 0:
+            print(diff)
+            answer = input(Fore.GREEN + 'Do you want to Commit changes?[yes|no] ')
+            if answer == 'yes':
+                print(f'Configuration has been committed on {self.ip}.')
+                self.npconn.commit_config()
+                print('Done!!\n' + Style.RESET_ALL)
+                print("=" * 80 + "\n")
+            else:
+                print(f'No configuration changes were committed on {self.ip}.')
+                self.npconn.discard_config()
+
+    def config_rollback(self):
         """ This method rollbacks the config to the previous config file just in case of misconfiguration.
          Needs testing in dev environment.
          NOT TO BE USED IN PROD.
         """
+        answer = input(Fore.RED + 'Do you want to rollback the changes?[yes|no] ')
+        if answer == 'yes':
+            print("=" * 25 + f" Rolling Back config " + "=" * 33 + "\n")
+            self.npconn.rollback()
+            diff = self.npconn.compare_config()
+            print(Fore.CYAN + diff + Style.RESET_ALL + "\n")
+            print(Fore.GREEN + 'Done!'+Style.RESET_ALL)
 
-        driver = get_network_driver(network_os)
-        nos = driver(hostname= self.ip, username= self.user, password= self.password)
-        nos.open()
-        output = nos.get_interfaces()
-        dump = json.dumps(output,indent=4)
-        return dump
-        #nos.load_replace_candidate(filename='config.txt')
-        #diff = nos.compare_config()
-        #if len(diff):
-        #    nos.commit_config()
-        #else:
-        #    nos.discard_config()
+        print("=" * 25 + f" Closing Conn {self.ip} " + "=" * 28 + "\n")
+        self.npconn.close()
 
     def write_output_to_file(self, output):
         """This method writesall output to a file"""

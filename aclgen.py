@@ -2,8 +2,12 @@
 import os
 from datetime import datetime
 import logging
+from utility.file_creator import Utility
 
 logger = logging.getLogger(__name__)
+
+class Error(Exception):
+    """Base error class."""
 
 class ACLGEN:
     """
@@ -11,7 +15,7 @@ class ACLGEN:
         Cisco, Arista, Juniper, Fortinet
         returns: proposed config file, rollback config and config plan file
     """
-
+    path= path= r'C:\Users\sjoshi\Desktop\code\FYP-2022\acl_rules\_'
     now = datetime.now()
     year = now.year
     month = now.month
@@ -19,15 +23,10 @@ class ACLGEN:
     hour = now.hour
     minute = now.minute
 
-    #proposed_config_output = os.path.join('/acl_rules/acl_proposed')
-    proposed_config_output = 'acl_proposed'
-    proposed_config_output =  f'{proposed_config_output}_{day}_{month}_{year}_{hour}_{minute}.txt'
-    #rollback_config_output = os.path.join('/acl_rules/acl_rollback')
-    rollback_config_output = 'acl_rollback'
-    rollback_config_output = f'{rollback_config_output}_{day}_{month}_{year}_{hour}_{minute}.txt'
-    #combine_config_output  = os.path.join('/acl_rules/acl_combine_config')
-    combine_config_output = 'acl_combine_config'
-    combine_config_output  =  f'{combine_config_output}_{day}_{month}_{year}_{hour}_{minute}.txt'
+    path = r'C:\Users\sjoshi\Desktop\code\FYP-2022\acl_rules\acl'
+    proposed_config_output =  f'_proposed_{day}_{month}_{year}_{hour}_{minute}.txt'
+    rollback_config_output =  f'_rollback_{day}_{month}_{year}_{hour}_{minute}.txt'
+    combine_config_output  =  f'_combine_config_{day}_{month}_{year}_{hour}_{minute}.txt'
 
     def __init__(self, src_ip, dst_ip, src_port, dst_port, protocol, action):
         """
@@ -164,30 +163,62 @@ class CISCO(ACLGEN):
     hour = now.hour
     minute = now.minute
 
-    proposed_config_output = os.path.join('/acl_rules/cisco_proposed.txt')
-    proposed_config_output = f'{proposed_config_output}_{day}_{month}_{year}_{hour}_{minute}.txt'
-    rollback_config_output = os.path.join('/acl_rules/cisco_rollback.txt')
-    rollback_config_output = f'{rollback_config_output}_{day}_{month}_{year}_{hour}_{minute}.txt'
-    combine_config_output = os.path.join('/acl_rules/cisco_combine_config.txt')
-    combine_config_output= f'{combine_config_output}_{day}_{month}_{year}_{hour}_{minute}.txt'
-
+    proposed_config_output = f'_cisco_proposed_{day}_{month}_{year}_{hour}_{minute}.txt'
+    rollback_config_output = f'_cisco_rollback_{day}_{month}_{year}_{hour}_{minute}.txt'
+    combine_config_output = f'_cisco_combine_config_{day}_{month}_{year}_{hour}_{minute}.txt'
 
     def __init__(self, src_ip, dst_ip, src_port, dst_port, protocol, action):
         super().__init__(src_ip, dst_ip, src_port, dst_port, protocol, action)
+
+
+class UnsupportedEosAccessListError(Error):
+    """When a filter type is not supported in an EOS policy target."""
 
 class ARISTA(ACLGEN):
     """ Arista child class
         """
-    proposed_config_output = os.path.join('/acl_rules/arista_proposed.txt')
+    now = datetime.now()
+    year = now.year
+    month = now.month
+    day = now.day
+    hour = now.hour
+    minute = now.minute
+
+    proposed_config_output = f'_arista_proposed_{day}_{month}_{year}_{hour}_{minute}.txt'
     rollback_config_output = os.path.join('/acl_rules/arista_rollback.txt')
     combine_config_output  = os.path.join('/acl_rules/arista_combine_config.txt')
+
+
 
     def __init__(self, src_ip, dst_ip, src_port, dst_port, protocol, action):
         super().__init__(src_ip, dst_ip, src_port, dst_port, protocol, action)
 
 
+    def _AppendTargetByFilterType(self, filter_name, filter_type):
+        target = []
+        if filter_type == 'standard':
+            if filter_name.isdigit():
+                target.append('no access-list %s' % filter_name)
+            else:
+                target.append('no ip access-list standard %s' % filter_name)
+                target.append('ip access-list standard %s' % filter_name)
+        elif filter_type == 'extended':
+            target.append('no ip access-list %s' % filter_name)
+            target.append('ip access-list %s' % filter_name)
+        elif filter_type == 'object-group':
+            target.append('no ip access-list %s' % filter_name)
+            target.append('ip access-list %s' % filter_name)
+        elif filter_type == 'inet6':
+            target.append('no ipv6 access-list %s' % filter_name)
+            target.append('ipv6 access-list %s' % filter_name)
+        else:
+            raise UnsupportedEosAccessListError('access list type %s not supported by %s' % (
+                    filter_type, self._PLATFORM))
+        return target
+
 class JUNIPER(ACLGEN):
     """ Juniper child class
+        Method to be configured at later stage
         """
     proposed_config_output = 'juniper_proposed.txt'
     rollback_config_output = 'juniper_rollback.txt'
@@ -201,6 +232,7 @@ class FORTINET(ACLGEN):
         proposed config,
         Rollback config
         combine planned config
+        Method to be configured at later stage
         """
     proposed_config_output = 'forti_proposed.txt'
     rollback_config_output = 'forti_rollback.txt'

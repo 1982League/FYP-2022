@@ -28,7 +28,7 @@ class Policies:
         All external resources will be denied access.
             """
 
-        with open('/policy/policies.json') as f:
+        with open('policies.json') as f:
             access_policies = json.load(f)
             pol_dict = {}
             for key, values in access_policies.items():
