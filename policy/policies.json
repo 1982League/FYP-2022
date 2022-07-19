@@ -120,12 +120,12 @@
   },
   "http": {
     "policy": "HTTP_Policy: Access Permitted for specific subnets.",
-    "source_ip": "10.1.20.0/24. 10.1.20.6, 10.1.20.5",
+    "source_ip": "10.1.20.6, 10.1.20.5, 10.1.20.0/24",
     "protocol": "tcp",
     "src_port": "any",
     "dst_port": "80",
     "action": "permit",
-    "destination_ip": "10.1.81.0/24,10.1.80.0/24, 10.1.200.0/24"
+    "destination_ip": "10.1.81.3, 10.1.81.0/24, 10.1.80.0/24, 10.1.200.0/24"
   },
   "https": {
     "policy": "HTTPS_Policy: Access Permitted for specific subnets.",

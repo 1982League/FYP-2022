@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import json
 import sys
 import pyfiglet
 from colorama import Fore, Style
@@ -11,6 +12,7 @@ from lib.validate_policy import Policies
 from lib.net_module import SSHLogin
 from lib.telnet_module import Device
 from aclgen import ACLGEN
+from alive_progress import alive_bar
 import time
 import getpass
 from datetime import datetime
@@ -194,38 +196,44 @@ with open(OpsTicketInfo, 'a') as f:
     print()
     print("="*30 + " Fetching Target IP Address " + "="* 33 + "\n")
     f.write("="*30 + " Fetching Target IP Address " + "="* 33 + "\n")
+
     target_ip = TargetIP(dst_ip)
     ip = target_ip.get_target_ip()
     ip = ip.strip()  #AttributeError: 'NoneType' object has no attribute 'strip'
+
+    for total in 500, 0:  # 700, 400, 0:
+        with alive_bar(total) as bar:
+            for _ in range(500):
+                time.sleep(.001)
+                bar()
+
+    print("\n" + "="*90 + "\n")
     print("Target IP: " + ip)
     f.write("Target IP: " + ip + "\n")
 
     """ Policy Parsing/Policy Check with user request parameters """
-    print("=" * 30 + " Pulling Access Control Policy " + "="*22 + "\n")
-    f.write("=" * 30 + " Pulling Access Control Policy " + "="*22 + "\n")
+    print("=" * 30 + " Pulling Access Control Policy " + "="*30 + "\n")
+    f.write("=" * 30 + " Pulling Access Control Policy " + "="*30 + "\n")
     pol_check = Policies(src_ip, src_port, dst_ip, dst_port, protocol, action)
     print()
     policy = pol_check.get_policy()
-    print(policy)
-    f.write(policy + "\n")
+    pol = json.dumps(policy,indent=4)
+    print(pol)
+    f.write(str(policy) + "\n")
     print()
 
-    if 'http' in policy:
-        print(Style.BRIGHT,Fore.BLUE + "Please Contact Chief Security Officer to review the request!")
-        f.write("Please Contact Chief Security Officer to review the request!")
-        print(Style.RESET_ALL)
     if policy is None:
-        print(Style.BRIGHT,Fore.BLUE + "Please Contact Chief Security Officer to review the request!")
-        f.write("Please Contact Chief Security Officer to review the request!")
-        print(Style.RESET_ALL)
+        print(Style.BRIGHT,Fore.BLUE + "Please Check the policy!"+Style.RESET_ALL)
+        #f.write("Please Contact Chief Security Officer to review the request!")
+
     elif 'dmz' in policy:
         print(Style.BRIGHT, Fore.RED + "Please Contact Chief Security Officer to review the request!")
         f.write("Please Contact Chief Security Officer to review the request!")
         print(Style.RESET_ALL)
 
     """ Prompting user for Login Option """
-    print("\n" + "=" * 30 + " Choose SSH or Telnet for login " + "="*20 +"\n")
-    f.write("\n" + "=" * 30 + " Choose SSH or Telnet for login " + "="*20 +"\n")
+    print("\n" + "=" * 30 + " Choose SSH or Telnet for login " + "="*30 +"\n")
+    f.write("\n" + "=" * 30 + " Choose SSH or Telnet for login " + "="*30 +"\n")
     login_option = (
         "1. SSH\n"
         "2. Telnet\n"
@@ -286,7 +294,7 @@ with open(OpsTicketInfo, 'a') as f:
             #get vlan name on the fly automated way
             ip_route_info = conn.get_ip_route(src_ip)
             f.write(ip_route_info + "\n")
-            #vlan_name = 'VLAN444'
+
             vlan_name = conn.get_vlan_info(ip_route_info)
             print(conn.get_vlan_config(vlan_name))
             f.write(vlan_name + "\n")
@@ -334,12 +342,14 @@ with open(OpsTicketInfo, 'a') as f:
 
         elif 'cisco ios' in version:
 
+            ip_route=conn.get_ip_route(src_ip)
             print(conn.get_ip_route(src_ip))
+
             print("=" * 89 + "\n")
             f.write(conn.get_ip_route(src_ip))
             f.write("=" * 89 + "\n")
 
-            vlan_name = conn.get_vlan_info()
+            vlan_name = conn.get_vlan_info(ip_route)
             print(vlan_name)
             f.write(vlan_name)
 
@@ -348,7 +358,7 @@ with open(OpsTicketInfo, 'a') as f:
             print("=" * 89 + "\n")
             f.write("=" * 89 + "\n")
 
-            acl_name = conn.get_acl_name()
+            acl_name = conn.get_acl_name(vlan_name)
             f.write(acl_name + "\n")
             print(conn.get_acl_config(acl_name))
             f.write(conn.get_acl_config(acl_name))

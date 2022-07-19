@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import json
-import os
 import logging
 
 logger = logging.getLogger(__name__)
@@ -34,153 +33,153 @@ class Policies:
             pol_dict = {}
             for key, values in access_policies.items():
                 if (self.src_ip in access_policies['ftp']['source_ip']) and\
-                   (self.src_ip in access_policies['ftp']['destination_ip']) and \
+                   (self.dst_ip in access_policies['ftp']['destination_ip']) and \
                    (self.protocol in access_policies['ftp']['protocol']) and \
-                   (self.src_ip in access_policies['ftp']['dst_port']) and \
+                   (self.dst_port in access_policies['ftp']['dst_port']) and \
                    (self.action in access_policies['ftp']['action']):
 
                     pol_dict['ftp'] = access_policies['ftp']
                     return pol_dict
 
                 if (self.src_ip in access_policies['ssh']['source_ip']) and\
-                   (self.src_ip in access_policies['ssh']['destination_ip']) and \
+                   (self.dst_ip in access_policies['ssh']['destination_ip']) and \
                    (self.protocol in access_policies['ssh']['protocol']) and \
-                   (self.src_ip in access_policies['ssh']['dst_port']) and \
+                   (self.dst_port in access_policies['ssh']['dst_port']) and \
                    (self.action in access_policies['ssh']['action']):
 
                     pol_dict['ssh'] = access_policies['ssh']
                     return pol_dict
 
                 if (self.src_ip in access_policies['telnet']['source_ip']) and\
-                   (self.src_ip in access_policies['telnet']['destination_ip']) and \
+                   (self.dst_ip in access_policies['telnet']['destination_ip']) and \
                    (self.protocol in access_policies['telnet']['protocol']) and \
-                   (self.src_ip in access_policies['telnet']['dst_port']) and \
+                   (self.dst_port in access_policies['telnet']['dst_port']) and \
                    (self.action in access_policies['telnet']['action']):
 
                     pol_dict['telnet'] = access_policies['telnet']
                     return pol_dict
 
                 if (self.src_ip in access_policies['smtp']['source_ip']) and\
-                   (self.src_ip in access_policies['smtp']['destination_ip']) and \
+                   (self.dst_ip in access_policies['smtp']['destination_ip']) and \
                    (self.protocol in access_policies['smtp']['protocol']) and \
-                   (self.src_ip in access_policies['smtp']['dst_port']) and \
+                   (self.dst_port in access_policies['smtp']['dst_port']) and \
                    (self.action in access_policies['smtp']['action']):
 
                     pol_dict['smtp'] = access_policies['smtp']
                     return pol_dict
 
                 if (self.src_ip in access_policies['ipsec']['source_ip']) and\
-                   (self.src_ip in access_policies['ipsec']['destination_ip']) and \
+                   (self.dst_ip in access_policies['ipsec']['destination_ip']) and \
                    (self.protocol in access_policies['ipsec']['protocol']) and \
-                   (self.src_ip in access_policies['ipsec']['dst_port']) and \
+                   (self.dst_port in access_policies['ipsec']['dst_port']) and \
                    (self.action in access_policies['ipsec']['action']):
 
                     pol_dict['ipsec'] = access_policies['ipsec']
                     return pol_dict
 
                 if (self.src_ip in access_policies['dns']['source_ip']) and\
-                   (self.src_ip in access_policies['dns']['destination_ip']) and \
+                   (self.dst_ip in access_policies['dns']['destination_ip']) and \
                    (self.protocol in access_policies['dns']['protocol']) and \
-                   (self.src_ip in access_policies['dns']['dst_port']) and \
+                   (self.dst_port in access_policies['dns']['dst_port']) and \
                    (self.action in access_policies['dns']['action']):
 
                     pol_dict['dns'] = access_policies['dns']
                     return pol_dict
 
                 if (self.src_ip in access_policies['dhcp']['source_ip']) and\
-                   (self.src_ip in access_policies['dhcp']['destination_ip']) and \
+                   (self.dst_ip in access_policies['dhcp']['destination_ip']) and \
                    (self.protocol in access_policies['dhcp']['protocol']) and \
-                   (self.src_ip in access_policies['dhcp']['dst_port']) and \
+                   (self.dst_port in access_policies['dhcp']['dst_port']) and \
                    (self.action in access_policies['dhcp']['action']):
 
                     pol_dict['dhcp'] = access_policies['dhcp']
                     return pol_dict
 
                 if (self.src_ip in access_policies['tftp']['source_ip']) and\
-                   (self.src_ip in access_policies['tftp']['destination_ip']) and \
+                   (self.dst_ip in access_policies['tftp']['destination_ip']) and \
                    (self.protocol in access_policies['tftp']['protocol']) and \
-                   (self.src_ip in access_policies['tftp']['dst_port']) and \
+                   (self.dst_port in access_policies['tftp']['dst_port']) and \
                    (self.action in access_policies['tftp']['action']):
 
                     pol_dict['tftp'] = access_policies['tftp']
                     return pol_dict
 
                 if (self.src_ip in access_policies['http']['source_ip']) and\
-                   (self.src_ip in access_policies['http']['destination_ip']) and \
+                   (self.dst_ip in access_policies['http']['destination_ip']) and \
                    (self.protocol in access_policies['http']['protocol']) and \
-                   (self.src_ip in access_policies['http']['dst_port']) and \
+                   (self.dst_port in access_policies['http']['dst_port']) and \
                    (self.action in access_policies['http']['action']):
 
                     pol_dict['http'] = access_policies['http']
                     return pol_dict
 
                 if (self.src_ip in access_policies['pop3']['source_ip']) and\
-                   (self.src_ip in access_policies['pop3']['destination_ip']) and \
+                   (self.dst_ip in access_policies['pop3']['destination_ip']) and \
                    (self.protocol in access_policies['pop3']['protocol']) and \
-                   (self.src_ip in access_policies['pop3']['dst_port']) and \
+                   (self.dst_port in access_policies['pop3']['dst_port']) and \
                    (self.action in access_policies['pop3']['action']):
 
                     pol_dict['pop3'] = access_policies['pop3']
                     return pol_dict
 
                 if (self.src_ip in access_policies['nntp']['source_ip']) and\
-                   (self.src_ip in access_policies['nntp']['destination_ip']) and \
+                   (self.dst_ip in access_policies['nntp']['destination_ip']) and \
                    (self.protocol in access_policies['nntp']['protocol']) and \
-                   (self.src_ip in access_policies['nntp']['dst_port']) and \
+                   (self.dst_port in access_policies['nntp']['dst_port']) and \
                    (self.action in access_policies['nntp']['action']):
 
                     pol_dict['nntp'] = access_policies['nntp']
                     return pol_dict
 
                 if (self.src_ip in access_policies['ntp']['source_ip']) and\
-                   (self.src_ip in access_policies['ntp']['destination_ip']) and \
+                   (self.dst_ip in access_policies['ntp']['destination_ip']) and \
                    (self.protocol in access_policies['ntp']['protocol']) and \
-                   (self.src_ip in access_policies['ntp']['dst_port']) and \
+                   (self.dst_port in access_policies['ntp']['dst_port']) and \
                    (self.action in access_policies['ntp']['action']):
 
                     pol_dict['ntp'] = access_policies['ntp']
                     return pol_dict
 
                 if (self.src_ip in access_policies['ldap']['source_ip']) and\
-                   (self.src_ip in access_policies['ldap']['destination_ip']) and \
+                   (self.dst_ip in access_policies['ldap']['destination_ip']) and \
                    (self.protocol in access_policies['ldap']['protocol']) and \
-                   (self.src_ip in access_policies['ldap']['dst_port']) and \
+                   (self.dst_port in access_policies['ldap']['dst_port']) and \
                    (self.action in access_policies['ldap']['action']):
 
                     pol_dict['ldap'] = access_policies['ldap']
                     return pol_dict
 
                 if (self.src_ip in access_policies['https']['source_ip']) and\
-                   (self.src_ip in access_policies['https']['destination_ip']) and \
+                   (self.dst_ip in access_policies['https']['destination_ip']) and \
                    (self.protocol in access_policies['https']['protocol']) and \
-                   (self.src_ip in access_policies['https']['dst_port']) and \
+                   (self.dst_port in access_policies['https']['dst_port']) and \
                    (self.action in access_policies['https']['action']):
 
                     pol_dict['https'] = access_policies['https']
                     return pol_dict
 
                 if (self.src_ip in access_policies['sql']['source_ip']) and\
-                   (self.src_ip in access_policies['sql']['destination_ip']) and \
+                   (self.dst_ip in access_policies['sql']['destination_ip']) and \
                    (self.protocol in access_policies['sql']['protocol']) and \
-                   (self.src_ip in access_policies['sql']['dst_port']) and \
+                   (self.dst_port in access_policies['sql']['dst_port']) and \
                    (self.action in access_policies['sql']['action']):
 
                     pol_dict['sql'] = access_policies['sql']
                     return pol_dict
 
                 if (self.src_ip in access_policies['rdp']['source_ip']) and\
-                   (self.src_ip in access_policies['rdp']['destination_ip']) and \
+                   (self.dst_ip in access_policies['rdp']['destination_ip']) and \
                    (self.protocol in access_policies['rdp']['protocol']) and \
-                   (self.src_ip in access_policies['rdp']['dst_port']) and \
+                   (self.dst_port in access_policies['rdp']['dst_port']) and \
                    (self.action in access_policies['rdp']['action']):
 
                     pol_dict['rdp'] = access_policies['rdp']
                     return pol_dict
 
-                if (self.src_ip in access_policies['dmz']['src_ip']) and \
-                   (self.src_ip in access_policies['dmz']['dst_ip']) and \
+                if (self.src_ip in access_policies['dmz']['source_ip']) and \
+                   (self.dst_ip in access_policies['dmz']['destination_ip']) and \
                    (self.protocol in access_policies['dmz']['protocol']) and \
-                   (self.src_ip in access_policies['dmz']['dst_port']) and \
+                   (self.dst_port in access_policies['dmz']['dst_port']) and \
                    (self.action in access_policies['dmz']['action']):
 
                     pol_dict['dmz'] = access_policies['dmz']
