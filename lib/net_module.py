@@ -280,7 +280,7 @@ class SSHLogin:
                          NOT TO BE USED IN PROD.
                         """
         print("=" * 25 + f" Accessing {self.ip} " + "=" * 30 + "\n")
-        self.npconn.load_replace_candidate(backupConfigFile)
+        #self.npconn.load_replace_candidate(backupConfigFile)
         merge = self.npconn.load_merge_candidate(proposedConfig)
         diff = self.npconn.compare_config()
         print("=" * 25 + f" Comparing the Config " + "=" * 31 + "\n")

@@ -246,7 +246,7 @@ class NETCONN:
                          NOT TO BE USED IN PROD.
                         """
         print("=" * 25 + f" Accessing {self.ip} " + "=" * 30 + "\n")
-        self.npconn.load_replace_candidate(backupConfigFile)
+        #self.npconn.load_replace_candidate(backupConfigFile)
         merge = self.npconn.load_merge_candidate(proposedConfig)
         diff = self.npconn.compare_config()
         print("=" * 25 + f" Comparing the Config " + "=" * 31 + "\n")
@@ -261,6 +261,7 @@ class NETCONN:
             else:
                 print(f'No configuration changes were committed on {self.ip}.')
                 self.npconn.discard_config()
+        return diff
 
     def config_rollback(self, network_os, configfile):
         """ This method rollbacks the config to the previous config file just in case of misconfiguration.
@@ -274,9 +275,7 @@ class NETCONN:
             diff = self.npconn.compare_config()
             print(Fore.CYAN + diff + Style.RESET_ALL + "\n")
             print(Fore.GREEN + 'Done!')
-
-        print("=" * 25 + f" Closing Conn {self.ip} " + "=" * 28 + "\n")
-        self.npconn.close()
+        return diff
 
 
     

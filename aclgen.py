@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 import logging
 from utility.file_creator import Utility
+from lib.validate_addresses import Validate
 
 logger = logging.getLogger(__name__)
 
@@ -88,6 +89,13 @@ class ACLGEN:
             print("No Protocol")
 
         if self.src_ip:
+            host = 'host'
+            acl_rule.append(host)
+            acl_rule.append(self.src_ip)
+            ace = ' '.join(map(str, acl_rule))
+        elif self.src_ip.network():
+            net = 'network'
+            acl_rule.append(net)
             acl_rule.append(self.src_ip)
             ace = ' '.join(map(str, acl_rule))
         else:
@@ -96,7 +104,15 @@ class ACLGEN:
         if self.src_port:
             acl_rule.append(self.src_port)
             ace = ' '.join(map(str, acl_rule))
+
         if self.dst_ip:
+            host= 'host'
+            acl_rule.append(host)
+            acl_rule.append(self.dst_ip)
+            ace = ' '.join(map(str, acl_rule))
+        elif self.dst_ip.network():
+            net ='network'
+            acl_rule.append(net)
             acl_rule.append(self.dst_ip)
             ace = ' '.join(map(str, acl_rule))
 

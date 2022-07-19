@@ -209,6 +209,11 @@ with open(OpsTicketInfo, 'a') as f:
     print(policy)
     f.write(policy + "\n")
     print()
+
+    if 'http' in policy:
+        print(Style.BRIGHT,Fore.BLUE + "Please Contact Chief Security Officer to review the request!")
+        f.write("Please Contact Chief Security Officer to review the request!")
+        print(Style.RESET_ALL)
     if policy is None:
         print(Style.BRIGHT,Fore.BLUE + "Please Contact Chief Security Officer to review the request!")
         f.write("Please Contact Chief Security Officer to review the request!")

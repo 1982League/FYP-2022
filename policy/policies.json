@@ -3,7 +3,8 @@
     "ftp_policy": "FTP_Policy: FTP lacks security, lacks control and lack of reporting,all internal/external subnet should be deny access.",
     "source_ip": "10.1.20.0/24",
     "protocol": "tcp",
-    "port": "20",
+    "src_port": "any",
+    "dst_port": "20",
     "action": "deny",
     "destination_ip": "10.1.11.0/24"
   },
@@ -11,7 +12,8 @@
     "policy": "SSH_Policy: Secure Shell access can be permitted to only internal subnets.",
     "source_ip": "10.1.11.0/24,10.1.20.0/24,10.1.30.0/24,10.1.80.0/24",
     "protocol": "tcp",
-    "port": "22",
+    "src_port": "any",
+    "dst_port": "22",
     "action": "permit",
     "destination_ip": "10.1.100.0/24, 10.1.200.0/24"
   },
@@ -19,7 +21,8 @@
     "policy": "Telnet_Policy: telnet is denied in the network at any cost.",
     "source_ip": "any",
     "protocol": "tcp",
-    "port": "23",
+    "src_port": "any",
+    "dst_port": "23",
     "action": "deny",
     "destination_ip": "10.1.11.0/25, 10.1.200.0/24"
   },
@@ -27,7 +30,8 @@
     "policy": "SMTP_Policy: Mail services are allowed, filter by third party. ",
     "source_ip": "any",
     "protocol": "tcp",
-    "port": "25",
+    "src_port": "any",
+    "dst_port": "25",
     "action": "permit",
     "destination_ip": "10.0.0.0/8"
   },
@@ -35,7 +39,8 @@
     "policy": "IPSec_Policy: Permitted only corporate subnets.",
     "source_ip": "10.1.0.0/24",
     "protocol": "tcp",
-    "port": "50",
+    "src_port": "any",
+    "dst_port": "50",
     "action": "permit",
     "destination_ip": "10.1.11.0/24, 10.1.81.0/24"
   },
@@ -43,7 +48,8 @@
     "policy": "DNS_Policy: DNS requests are permitted for domain lookup.",
     "source_ip": "10.1.20.0/24",
     "protocol": "tcp/udp",
-    "port": "53",
+    "src_port": "any",
+    "dst_port": "53",
     "action": "permit",
     "destination_ip": "any"
   },
@@ -51,7 +57,8 @@
     "policy": "DHCP_Policy: DHCP requests are permitted for internal corp infra.",
     "source_ip": "any",
     "protocol": "udp",
-    "port": [
+    "src_port": "any",
+    "dst_port": [
       67,
       68
     ],
@@ -62,13 +69,14 @@
     "policy": "TFTP_Policy: TFTP are not permitted.",
     "source_ip": "any",
     "protocol": "udp",
-    "port": 69,
+    "src_port": "any",
+    "dst_port": "69",
     "action": "deny",
     "destination_ip": "any"
   },
   "http": {
     "policy": "HTTP_Policy: HTTP requests to dev is permitted for testing.",
-    "source_ip": "10.1.20.0/24,10.1.30.0/24,10.1.20.3, 10.1.30.3/24",
+    "source_ip": "10.1.20.0/24,10.1.30.0/24,10.1.20.6, 10.1.30.3/24",
     "protocol": "tcp",
     "port": "80",
     "action": "permit",
@@ -78,7 +86,8 @@
     "policy": "POP3_Policy: Mail protocol allowed for emails.",
     "source_ip": "10.1.20.0/24",
     "protocol": "tcp",
-    "port": 110,
+    "src_port": "any",
+    "dst_port": "110",
     "permission": "permit",
     "destination_ip": "any"
   },
@@ -86,7 +95,8 @@
     "policy": "NNTP_Policy: Are allowed access.",
     "source_ip": "any",
     "protocol": "tcp",
-    "port": 119,
+    "src_port": "any",
+    "dst_port": "119",
     "action": "permit",
     "destination_ip": "any"
   },
@@ -94,7 +104,8 @@
     "policy": "NTP_Policy: Denied access.",
     "source_ip": "any",
     "protocol": "tcp",
-    "port": 123,
+    "src_port": "any",
+    "dst_port": "123",
     "action": "deny",
     "destination_ip": "any"
   },
@@ -102,15 +113,26 @@
     "policy": "LDAP_Policy: LDAP Access is permitted to internal corp.",
     "source_ip": "any",
     "protocol": "tcp",
-    "port": 389,
+    "src_port": "any",
+    "dst_port": "389",
     "action": "permit",
     "destination_ip": "any"
+  },
+  "http": {
+    "policy": "HTTP_Policy: Access Permitted for specific subnets.",
+    "source_ip": "10.1.20.0/24. 10.1.20.6, 10.1.20.5",
+    "protocol": "tcp",
+    "src_port": "any",
+    "dst_port": "80",
+    "action": "permit",
+    "destination_ip": "10.1.81.0/24,10.1.80.0/24, 10.1.200.0/24"
   },
   "https": {
     "policy": "HTTPS_Policy: Access Permitted for specific subnets.",
     "source_ip": "10.1.10.0/24",
     "protocol": "tcp",
-    "port": 443,
+    "src_port": "any",
+    "dst_port": "443",
     "action": "permit",
     "destination_ip": "10.1.81.0/24,10.1.80.0/24, 10.1.200.0/24"
   },
@@ -118,7 +140,8 @@
     "policy": "SQL_Policy: Access permitted for specific Subnets.",
     "source_ip": "10.1.0.0/8",
     "protocol": "tcp",
-    "port": 3306,
+    "src_port": "any",
+    "dst_port": "3306",
     "action": "permit",
     "destination_ip": "10.1.200.0/24"
   },
@@ -126,7 +149,8 @@
     "policy": "RDP_Policy: Is only permitted for corp/ip-sec subnets, deny for external.",
     "source_ip": "10.0.0.0/8",
     "protocol": "tcp",
-    "port": 3389,
+    "src_port": "any",
+    "dst_port": "3389",
     "action": "permit",
     "destination_ip": "10.0.20.0/24"
   },
@@ -134,7 +158,8 @@
     "policy": "DMZ_Policy: Any DMZ Access request needs manual reviewed by CISO/SOC Team.",
     "source_ip": "any",
     "protocol": "tcp",
-    "port": "any",
+    "src_port": "any",
+    "dst_port": "any",
     "action": "deny",
     "destination_ip": "any"
   }
