@@ -1,0 +1,23 @@
+ip domain-name netlab.net
+
+hostname R1
+
+
+ip domain-name netlab.net
+
+int loop 0
+ip address 1.1.1.1 255.255.255.255
+
+#[Crypto Key - 1024 SSH Enable]
+crypto key generate rsa modulus 1024
+ip ssh version 2
+
+service password-encryption
+enable password netlab
+username netlab password netlab
+username netlab privilege 15 password 0 netlab
+
+line vty 0 900
+login local
+transport input all
+

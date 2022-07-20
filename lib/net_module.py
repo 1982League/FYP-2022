@@ -124,21 +124,57 @@ class SSHLogin:
                 """
         self.conn.disconnect()
 
+    def extract_vlan_name(self,ip_route):
+        """ This method is going to extract vlan name from 'show ip route' command
+            information must be provided as an argument for this method to work.
+        """
+        if ip_route:
+            for vlan in ip_route:
+                findVlan = re.findall(r'Vlan[0-9]{1,3}', ip_route)
+                if 'Vlan' in ip_route:
+                    if isinstance(findVlan, list) and len(findVlan) > 0:
+                        if len(findVlan) > 1:
+                            for i in findVlan:
+                                if "Vlan" in i:
+                                    vlan_name = (i)
+                                    return vlan_name
+                                    break
+                        else:
+                            vlan_name = findVlan[-1]
+                            return vlan_name
+                else:
+                    print("Has only one element")
+        else:
+            print("No route")
+
     def get_vlan_info(self, ip_route):
         """ This method is for getting vlan information, 'show ip route'
         information must be provided as an argument for this method to work.
         """
-        for i in ip_route:
-            if 'Vlan' in ip_route:
-                vlan = re.findall(r'[Vlan0-9]{5,7}', ip_route)
-                vlan_name = vlan[0]
 
-                if vlan_name:
-                    vlan_info = self.conn.send_command(net_devices.common_cmnds['show']['interface'] + vlan_name,
+        for vlan in ip_route:
+
+            if 'Vlan' in ip_route:
+                findVlan = re.findall(r'Vlan[0-9]{1,3}', ip_route)
+                if isinstance(findVlan, list) and len(findVlan) > 0:
+                    if len(findVlan) > 1:
+                        for i in findVlan:
+                            if "Vlan" in i:
+                                vlan_name = (i)
+                                return vlan_name
+                                break
+                    else:
+                        vlan_name = findVlan[-1]
+                        return vlan_name
+                else:
+                    print("Has only one element")
+
+        if vlan_name:
+            vlan_info = self.conn.send_command(net_devices.common_cmnds['show']['interface'] + vlan_name,
                                                        strip_command=False)
-                    return vlan_info
-            else:
-                return 'No vlan Configured'
+            return vlan_info
+        else:
+            return 'No Vlan'
 
     def get_acl_name(self, vlan_info):
         """ This method gets the Access Control List Name configure in VLAN
@@ -150,64 +186,91 @@ class SSHLogin:
 
         for agroup in vlan:
             if agroup == "access-group":
-                if vlan[counter - 1] == "ip" and vlan[counter + 2] == "in":
-                    acl_name = vlan[counter + 1]
+                if vlan[counter-1] == "ip" and vlan[counter+2] == "in":
+                    acl_name = vlan[counter+1]
                     return acl_name
-            else:
-                return 'No ACL configured on the Interface'
             counter += 1
 
     def set_commands(self, command, parameter):
+        """ This method simply executes  command on the network device
+            :parameter: parameter (Any given Network Command) usually handled by other script to execute specific
+            commands
+            :returns: command output, can use NTC-Templates along with it.
+            :platforms: cisco
+        """
         command_output = self.conn.send_command(command + " " + parameter, strip_command=False)
-        return command_output
+        parsed_output = self.conn.send_command(command + " " + parameter, use_textfsm=True)
+        return command_output, parsed_output
 
     def var_commands(self, command):
-        """ This method simply take argument and executes the command
-        """
+        """ This method executes a command
+         :parameter: network command
+         :returns: string or parsed output
+         :platforms: cisco
+         """
         any_command = self.conn.send_command(command, strip_command=False)
-        return any_command
+        parsed_command = self.conn.send_command(command, use_textsm=True)
+        return any_command, parsed_command
 
     def get_ip_route(self, search_ip):
-        """ This method would provide you information regarding specific ip address and its orginating
-            routing information """
+        """ This method executes along with command parameter
+                 :parameter: ip_address to be used
+                 :returns: string blob and parsed output
+                 :platforms: cisco
+                 """
         show_route = self.conn.send_command(net_devices.common_cmnds['show']['ip route'] + " " + search_ip,
                                             strip_command=False)
-        return show_route
+        parsed_route = self.conn.send_command(net_devices.common_cmnds['show']['ip route'] + " " + search_ip,
+                                              use_textfsm=True)
+        return show_route, parsed_route
 
     def get_vlan_config(self, vlan_name):
-        """ This method provides you the specific vlan information, user must specify correct vlan name
-
+        """ This method shows specific vlan
+            :parameter: Vlan_name as a parameter
+            :returns: string output and output lists
+            :platforms: cisco
         """
         vlan_config = self.conn.send_command(net_devices.common_cmnds['show']['interface'] + " " + vlan_name,
                                              strip_command=False)
-        return vlan_config
+        parsed_config = self.conn.send_command(net_devices.common_cmnds['show']['interface'] + " " + vlan_name,
+                                               use_textfsm=True)
+        return vlan_config, parsed_config
 
     def get_acl_config(self, acl_name):
-        """ This method executes the show ip access list commands along with the correct acl name to narrow down
-        the result
-       """
+        """This method gets Access control list configuration
+            :parameter: takes acl name from the other method
+            :returns: access control list
+            :platforms: cisco
+            """
         acl_config = self.conn.send_command(net_devices.common_cmnds['show']['ip access-list'] + " " + acl_name,
                                             strip_command=False)
-        return acl_config
+        parsed_config = self.conn.send_command(net_devices.common_cmnds['show']['ip access-list'] + " " + acl_name,
+                                               use_textfsm=True)
+        return acl_config, parsed_config
 
     def get_object_groups(self):
-        """ This method will get you the name of the network object groups
+        """This method simply displays all the object-groups
+        :platforms: cisco
         """
         object_groups = self.conn.send_command(net_devices.common_cmnds['show']['object-group'], strip_command=False)
-        return object_groups
+        parsed_output = self.conn.send_command(net_devices.common_cmnds['show']['object-group'], use_textfsm=True)
+        return object_groups, parsed_output
+
 
     def config_command(self, command):
         """ This method by default configures the host as per given command argument from global config mode
                 """
         command_output = self.conn.send_config_set(command, strip_command=False)
-        return command_output
+        parsed_command = self.conn.send_config_set(command, use_textfsm=True)
+        return command_output, parsed_command
 
-    def config_command_lists(self, commands):
+    def config_command_lists(self, cmd_list):
         """ This method configures list of commands, given the commands is a list variable, execution of the commands
         are in top down order sequentially
         """
-        commands_output = self.conn.send_config_set(commands.split('\n'), strip_command=False)
-        return commands_output
+        commands_output = self.conn.send_config_set(cmd_list.split('\n'), strip_command=False)
+        parsed_output = self.conn.send_config_set(cmd_list.split('\n'), use_textfsm=True)
+        return commands_output, parsed_output
 
     def config_from_file(self, filename):
         """This method configures commands from the file. The config file should be place in the same
@@ -227,23 +290,46 @@ class SSHLogin:
         return net_secure, parsed_command
 
     def get_junos_uptime(self):
-        uptime = self.conn.send_command(net_devices.junos['show']['uptime'], strip_command=False)
-        return uptime
+        """This method checks the version
+            :platforms: juniper
+        """
+        uptime = self.conn.send_command(net_devices.junos['show']['version'], strip_command=False)
+        parsed_uptime = self.conn.send_command(net_devices.junos['show']['version'], use_textfsn=True)
+        return uptime, parsed_uptime
     
     def get_junos_sysinfo(self):
+        """ This method executes list of network security commands to secure router/switch/firewall
+                        :parameter: sys info
+                        :returns: string output and parsed output
+                        :platforms: juniper
+                        """
         sysinfo = self.conn.send_command(net_devices.junos['show']['sysinfo'], strip_command=False)
-        return sysinfo
+        parsed_sysinfo = self.conn.send_command(net_devices.junos['show']['sysinfo'], use_textfsn=True)
+        return sysinfo, parsed_sysinfo
 
     def get_junos_interfaces(self):
+        """ This method executes list of network security commands to secure router/switch/firewall
+                        :parameter: interfaces
+                        :returns: string output/parsed
+                        :platforms: juniper
+                        """
         inter = self.conn.send_command(net_devices.junos['show']['interface'], strip_command=False)
-        return inter
+        parsed_inter = self.conn.send_command(net_devices.junos['show']['interface'], use_textfsn=True)
+        return inter, parsed_inter
 
     def get_junos_bgp_info(self):
+        """ This method executes list of network security commands to secure router/switch/firewall
+                                :parameter: bgp_info
+                                :returns: string output/parsed
+                                :platforms: juniper
+                                """
         bgpinfo = self.conn.send_command(net_devices.junos['show']['bgp'], strip_command=False)
-        return bgpinfo
+        parsed_bgpinfo = self.conn.send_command(net_devices.junos['show']['bgp'], use_textfsm=True)
+        return bgpinfo, parsed_bgpinfo
 
     def get_junos_config(self):
         config = self.conn.send_command(net_devices.junos['show']['config'], strip_command=False)
+        parsed_config = self.conn.send_command(net_devices.junos['show']['config'], use_textfsm=True)
         return config
 
     def current_config_backup(self):
@@ -252,7 +338,7 @@ class SSHLogin:
         In case of misconfiguration rollback config from the backup file can be used.
         """
         config = self.conn.send_command(net_devices.common_cmnds['run']['config'], strip_command=False)
-        #config =self.conn.send_command("show running-config", strip_command=False, delay_factor=3)
+
         now = datetime.now()
         year = now.year
         month = now.month
@@ -274,7 +360,7 @@ class SSHLogin:
         dump = json.dumps(output, indent=4)
         return dump
 
-    def merge_proposed_config(self, backupConfigFile, proposedConfig):
+    def merge_proposed_config(self, proposedConfig):
         """ This method rollbacks the config to the previous config file just in case of misconfiguration.
                          Needs testing in dev environment.
                          NOT TO BE USED IN PROD.
@@ -282,6 +368,8 @@ class SSHLogin:
         print("=" * 25 + f" Accessing {self.ip} " + "=" * 30 + "\n")
         #self.npconn.load_replace_candidate(backupConfigFile)
         merge = self.npconn.load_merge_candidate(proposedConfig)
+        print(merge)
+
         diff = self.npconn.compare_config()
         print("=" * 25 + f" Comparing the Config " + "=" * 31 + "\n")
         if len(diff) > 0:
@@ -296,16 +384,23 @@ class SSHLogin:
                 print(f'No configuration changes were committed on {self.ip}.')
                 self.npconn.discard_config()
 
-    def config_rollback(self):
+    def config_rollback(self, netos):
         """ This method rollbacks the config to the previous config file just in case of misconfiguration.
          Needs testing in dev environment.
          NOT TO BE USED IN PROD.
         """
+        self.netos = netos
+        self.driver = get_network_driver(self.netos)
+        self.npconn = self.driver(self.ip, self.username, self.password)
+        self.npconn.open
+
         answer = input(Fore.RED + 'Do you want to rollback the changes?[yes|no] ')
         if answer == 'yes':
             print("=" * 25 + f" Rolling Back config " + "=" * 33 + "\n")
             self.npconn.rollback()
             diff = self.npconn.compare_config()
+            print(diff)
+            #if print len(diff) < 0: print diff?
             print(Fore.CYAN + diff + Style.RESET_ALL + "\n")
             print(Fore.GREEN + 'Done!'+Style.RESET_ALL)
 

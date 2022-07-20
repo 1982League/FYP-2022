@@ -196,16 +196,15 @@ with open(OpsTicketInfo, 'a') as f:
     print()
     print("="*30 + " Fetching Target IP Address " + "="* 33 + "\n")
     f.write("="*30 + " Fetching Target IP Address " + "="* 33 + "\n")
-
-    target_ip = TargetIP(dst_ip)
-    ip = target_ip.get_target_ip()
-    ip = ip.strip()  #AttributeError: 'NoneType' object has no attribute 'strip'
-
     for total in 500, 0:  # 700, 400, 0:
         with alive_bar(total) as bar:
             for _ in range(500):
                 time.sleep(.001)
                 bar()
+
+    target_ip = TargetIP(dst_ip)
+    ip = target_ip.get_target_ip()
+    ip = ip.strip()  #AttributeError: 'NoneType' object has no attribute 'strip'
 
     print("\n" + "="*90 + "\n")
     print("Target IP: " + ip)
@@ -342,16 +341,17 @@ with open(OpsTicketInfo, 'a') as f:
 
         elif 'cisco ios' in version:
 
+            print("=" * 40 + " Getting Route Info " + "="*40  + "\n")
             ip_route=conn.get_ip_route(src_ip)
             print(conn.get_ip_route(src_ip))
 
-            print("=" * 89 + "\n")
-            f.write(conn.get_ip_route(src_ip))
+            print("=" * 40 + " Getting Vlan Info " + "="*40  + "\n")
+            f.write(conn.get_ip_route(src_ip) + "\n")
             f.write("=" * 89 + "\n")
 
             vlan_name = conn.get_vlan_info(ip_route)
             print(vlan_name)
-            f.write(vlan_name)
+            f.write(vlan_name + "\n")
 
             print(conn.get_vlan_config(vlan_name))
             f.write(conn.get_vlan_config(vlan_name) + "\n")
@@ -365,21 +365,22 @@ with open(OpsTicketInfo, 'a') as f:
             print("=" * 89 + "\n")
             f.write("=" * 89 + "\n")
 
-            print("=" * 40 + " NAPALM Testing " + "="* 28 + "\n")
-            f.write("=" * 40 + " NAPALM Testing " + "="* 28 + "\n")
+            print("=" * 40 + " NAPALM Testing " + "="* 39 + "\n")
+            f.write("=" * 40 + " NAPALM Testing " + "="* 39 + "\n")
             nos = 'ios'
             print(conn.config_rollback(nos))
             f.write(conn.config_rollback(nos) + "\n")
             print("=" * 89 + "\n")
-            #print(conn.var_commands(var_cmd))
 
-            print("=" * 40 + " Writing output to File " + "="* 20 + "\n")
+            print("=" * 40 + " Writing output to File " + "="* 31 + "\n")
+            f.write("=" * 40 + " Writing output to File " + "="* 31 + "\n")
             output = conn.get_object_groups()
             conn.write_output_to_file(output)
+            f.write(conn.write_output_to_file(output) + "\n")
             print(conn.write_output_to_file(output))
 
-            print("=" * 40 + " Backing up Current Config " + "="* 17 + "\n")
-            f.write("=" * 40 + " Backing up Current Config " + "="* 17 + "\n")
+            print("=" * 40 + " Backing up Current Config " + "="* 22 + "\n")
+            f.write("=" * 40 + " Backing up Current Config " + "="* 22 + "\n")
             current_config_backup = conn.current_config_backup()
 
             conn.current_config_backup()
@@ -389,28 +390,32 @@ with open(OpsTicketInfo, 'a') as f:
             print("=" * 89 + "\n")
             f.write("=" * 89 + "\n")
 
-            print("=" * 40 + " Generating ACL " + "="* 40 + "\n")
-            f.write("=" * 40 + " Generating ACL " + "="* 40 + "\n")
+            print("=" * 40 + " Generating ACL " + "="* 33 + "\n")
+            f.write("=" * 40 + " Generating ACL " + "="* 33 + "\n")
             gen = ACLGEN(src_ip,src_port,dst_ip,dst_port,protocol,action)
             gen.acl()
             f.write(gen.acl() + "\n")
             proposed_acl = gen.proposed_rule()
+            f.write(proposed_acl + "\n")
             rollback_acl = gen.rollback_rule()
-            gen.file_combine()
-            f.write(gen.file_combine() + "\n")
+            f.write(rollback_acl + "\n")
+            propose_rollback_plan = gen.file_combine()
+            f.write(propose_rollback_plan + "\n")
 
-            config_acl = input("Do you want to configure proposed ACL [yes|no]? ")
-            if config_acl == 'yes':
-                print("=" * 40 + " Configuring ACL " + "="* 40 + "\n")
+            config_acl = input(Fore.GREEN + "Do you want to configure proposed ACL [yes|no]? ")
+            if config_acl == 'yes' or config_acl == 'y':
+                print("\n" + "=" * 40 + " Configuring ACL " + "="* 40 + "\n" + Style.RESET_ALL)
                 conn.send_config_list(proposed_acl)
-                rollback = ("Do you want to rollback the config [yes|no]?")
-                if rollback == 'yes':
-                    conn.send_config_list(rollback_acl)
-                    print(Fore.RED +"ACL Configuration is removed.." + Style.RESET_ALL)
-                else:
-                    print("You have chose not to rollback the ACL config!!")
+                print("ACL Configured")
             else:
-                print("=" * 40 + " No ACL is configured " + "="* 40 + "\n")
+                print("\n" + "=" * 40 + " No ACL is configured " + "="* 27 + "\n")
+
+            rollback = (Fore.RED + "Do you want to rollback the config [yes|no]? ")
+            if rollback == 'yes' or rollback == 'y':
+                conn.send_config_list(rollback_acl)
+                print("\n" + Fore.RED + "ACL Configuration is removed.." + Style.RESET_ALL)
+            else:
+                print("You have chose not to rollback the ACL config!!\n")
 
 
         elif 'juniper junos' in version:

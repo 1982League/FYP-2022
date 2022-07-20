@@ -24,6 +24,9 @@ for ip in devices:
 for device in device_list:
     conn = ConnectHandler(**device)
     print("You are in Privilege Mode...")
+    hostname = input("Assign Hostname to the Network Device: ")
+
+    conn.send_config_set('hostname')
 
     file = input(f'Enter a configuration file (Use valid Path) for {device["host"]}: ')
 

@@ -1,0 +1,8 @@
+ip access-list extended incoming_traffic
+ permit tcp any any eq dns
+ permit ip any any
+ deny tcp any any eq telnet
+
+
+interface FastEthernet0/0
+ ip access-group incoming_traffic in

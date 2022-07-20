@@ -25,9 +25,11 @@ class ACLGEN:
     minute = now.minute
 
     path = r'C:\Users\sjoshi\Desktop\code\FYP-2022\acl_rules\acl'
-    proposed_config_output =  f'_proposed_{day}_{month}_{year}_{hour}_{minute}.txt'
-    rollback_config_output =  f'_rollback_{day}_{month}_{year}_{hour}_{minute}.txt'
-    combine_config_output  =  f'_combine_config_{day}_{month}_{year}_{hour}_{minute}.txt'
+    proposed_config_output =  f'ACL_proposed_{day}_{month}_{year}_{hour}_{minute}.txt'
+    rollback_config_output =  f'ACL_rollback_{day}_{month}_{year}_{hour}_{minute}.txt'
+    combine_config_output  =  f'ACL_configPlan_{day}_{month}_{year}_{hour}_{minute}.txt'
+    print("="*40 + " ACL Configuration Files Created " + "=" *22 + "\n")
+    print("\n"+ proposed_config_output + "\n" + rollback_config_output + "\n" + combine_config_output + "\n")
 
     def __init__(self, src_ip, dst_ip, src_port, dst_port, protocol, action):
         """
@@ -139,10 +141,10 @@ class ACLGEN:
         with open(self.proposed_config_output, 'r') as cnf:
             rule = cnf.readline()
             rule = rule.strip()
-            print(rule)
+            #print(rule)
         with open(self.rollback_config_output, 'w') as f:
             rollback = 'no ' + rule
-            print(rollback)
+            #print(rollback)
             rollback_config = f.write(rollback)
             return rollback_config
 
@@ -164,7 +166,7 @@ class ACLGEN:
             output = f.write(file2)
         with open(self.combine_config_output, 'r') as fr:
             readfile = fr.read()
-            print(readfile)
+            print(readfile+"\n")
 
         return output
 
