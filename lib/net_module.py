@@ -183,7 +183,6 @@ class SSHLogin:
                 """
         vlan = vlan_info.split()
         counter = 0
-
         for agroup in vlan:
             if agroup == "access-group":
                 if vlan[counter-1] == "ip" and vlan[counter+2] == "in":
@@ -268,8 +267,8 @@ class SSHLogin:
         """ This method configures list of commands, given the commands is a list variable, execution of the commands
         are in top down order sequentially
         """
-        commands_output = self.conn.send_config_set(cmd_list.split('\n'), strip_command=False)
-        parsed_output = self.conn.send_config_set(cmd_list.split('\n'), use_textfsm=True)
+        commands_output = self.conn.send_config_set(cmd_list, strip_command=False)
+        parsed_output = self.conn.send_config_set(cmd_list)
         return commands_output, parsed_output
 
     def config_from_file(self, filename):
@@ -286,7 +285,7 @@ class SSHLogin:
                  :platforms: cisco
                  """
         net_secure = self.conn.send_config_set(net_devices.common_cmnds['config']['network_security'], strip_command=False)
-        parsed_command = self.conn.send_config_set(net_devices.common_cmnds['config']['network_security'], use_textsm=True)
+        parsed_command = self.conn.send_config_set(net_devices.common_cmnds['config']['network_security'], use_textfsm=True)
         return net_secure, parsed_command
 
     def get_junos_uptime(self):
@@ -294,7 +293,7 @@ class SSHLogin:
             :platforms: juniper
         """
         uptime = self.conn.send_command(net_devices.junos['show']['version'], strip_command=False)
-        parsed_uptime = self.conn.send_command(net_devices.junos['show']['version'], use_textfsn=True)
+        parsed_uptime = self.conn.send_command(net_devices.junos['show']['version'], use_textfsm=True)
         return uptime, parsed_uptime
     
     def get_junos_sysinfo(self):
@@ -304,7 +303,7 @@ class SSHLogin:
                         :platforms: juniper
                         """
         sysinfo = self.conn.send_command(net_devices.junos['show']['sysinfo'], strip_command=False)
-        parsed_sysinfo = self.conn.send_command(net_devices.junos['show']['sysinfo'], use_textfsn=True)
+        parsed_sysinfo = self.conn.send_command(net_devices.junos['show']['sysinfo'], use_textfsm=True)
         return sysinfo, parsed_sysinfo
 
     def get_junos_interfaces(self):
@@ -314,7 +313,7 @@ class SSHLogin:
                         :platforms: juniper
                         """
         inter = self.conn.send_command(net_devices.junos['show']['interface'], strip_command=False)
-        parsed_inter = self.conn.send_command(net_devices.junos['show']['interface'], use_textfsn=True)
+        parsed_inter = self.conn.send_command(net_devices.junos['show']['interface'], use_textfsm=True)
         return inter, parsed_inter
 
     def get_junos_bgp_info(self):
@@ -391,7 +390,7 @@ class SSHLogin:
         """
         self.netos = netos
         self.driver = get_network_driver(self.netos)
-        self.npconn = self.driver(self.ip, self.username, self.password)
+        self.npconn = self.driver(self.ip, self.user, self.password)
         self.npconn.open
 
         answer = input(Fore.RED + 'Do you want to rollback the changes?[yes|no] ')

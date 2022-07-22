@@ -46,20 +46,34 @@ __ProjectName__ = "Automating Network Security through Adaptive Policy Driven Ac
 banner= pyfiglet.figlet_format("Automating Network Security through Adaptive Policy Driven Access Control")
 print(Style.BRIGHT, Fore.GREEN)
 print(banner)
+"""
+============================== ACL Tool Usage Instructions ==============================
+#       Enter relevant information to allow source network to access                    #
+#       resources from destination network with specific services                       #
+#       Please enter Source IP Address or Network Address                               #
+#       Please enter Destination IP Address or Network Address                          #
+#       Please enter Source Port                                                        #
+#       Please enter Destination Port                                                   #
+#       Please enter Protocol                                                           #
+#       Please enter the Action to be Taken for the given parameters                    #
+#       OPS ticket number, a text file will be created of the number, all the,          #
+#       information will be stored in the file, file will be located with the tool      #
+=========================================================================================
+"""
 
 """ Tool Usage Instructions """
 print(Style.BRIGHT,Fore.GREEN)
 print('=' * 30 + ' ACL Tool Usage Instructions ' + '=' * 30)
-print('# \tEnter relevant information to allow source network to access\t\t\t\t\t\t#\n'
-      '# \tresources from destination network with specific services\t\t\t\t\t\t\t#')
-print('# \tPlease enter Source IP Address or Network Address \t\t\t\t\t\t\t\t\t#')
-print('# \tPlease enter Destination IP Address or Network Address\t\t\t\t\t\t\t\t#')
-print('# \tPlease enter Source Port\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t#')
-print('# \tPlease enter Destination Port\t\t\t\t\t\t\t\t\t\t\t\t\t\t#')
-print('# \tPlease enter Protocol\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t#')
-print('# \tPlease enter the Action to be Taken for the given parameters\t\t\t\t\t\t#')
-print('# \tOPS ticket number, a text file will be created of the number, all the,\t\t\t\t#\n'
-      '# \tinformation will be stored in the file, file will be located with the tool\t\t\t#')
+print('# \tEnter relevant information to allow source network to access                 #\n'
+      '# \tresources from destination network with specific services                    #')
+print('# \tPlease enter Source IP Address or Network Address                            #')
+print('# \tPlease enter Destination IP Address or Network Address                       #')
+print('# \tPlease enter Source Port                                                     #')
+print('# \tPlease enter Destination Port                                                #')
+print('# \tPlease enter Protocol                                                        #')
+print('# \tPlease enter the Action to be Taken for the given parameters                 #')
+print('# \tOPS ticket number, a text file will be created of the number, all the,       #\n'
+      '# \tinformation will be stored in the file, file will be located with the tool   #')
 print("=" * 89 + "\n")
 print(Style.RESET_ALL)
 
@@ -104,8 +118,8 @@ OpsTicketInfo = f'{OPS_Ticket}_{day}_{month}_{year}_{hour}_{minute}.txt'
 
 """Creating a ticket file to store information with day_month_year_hour_minute to distinguish requests"""
 with open(OpsTicketInfo, 'a') as f:
-    print("=" * 30 + " " + OpsTicketInfo+ " Created " + "=" * 20 + "\n")
-    f.write("=" * 30 + " " + OpsTicketInfo+ " Created " + "=" * 20 + "\n")
+    print("=" * 30 + " " + OpsTicketInfo+ " Created " + "=" * 22 + "\n")
+    f.write("=" * 30 + " " + OpsTicketInfo+ " Created " + "=" * 22 + "\n")
     print(Style.BRIGHT, Fore.CYAN + "All the operational data will be appended to the file for "
                                     "tracking and auditing purpose.\n" + Style.RESET_ALL)
     f.write(OpsTicketInfo + "\nAll the operational data will be appended to the file for "
@@ -246,12 +260,12 @@ with open(OpsTicketInfo, 'a') as f:
         "\nEnter your choice[1/2]: ")
 
     option = input(login_option)
-    f.write("Login_Option" + option)
+    f.write("\nLogin_Option " + option)
 
     """ Instatiating Network Connection using SSH - DO NOT USE Telnet - it is Optional """
     if option == "1" or option == "SSH" or option == "ssh":
-        print("=" * 30 + f" Sshing to {ip} " + "="*20 +"\n")
-        f.write("=" * 30 + f" Sshing to {ip} " + "="*20 +"\n")
+        print("=" * 30 + f" Sshing to {ip} " + "="*43 +"\n")
+        f.write("=" * 30 + f" Sshing to {ip} " + "="*43 +"\n")
         start = time.time()
 
         user = input("Username: ")
@@ -263,14 +277,17 @@ with open(OpsTicketInfo, 'a') as f:
         except NetMikoAuthenticationException:
             print(Fore.RED + "=" * 89)
             print(f'Authentication failed on {ip}, please check your username and password.\n')
+            print("=" * 89 + "\n")
             print(Style.RESET_ALL)
         except NetMikoTimeoutException:
             print(Fore.RED + "=" * 89)
             print(f'{ip} is not reachable, check your network connection!! \n')
+            print("=" * 89 + "\n")
             print(Style.RESET_ALL)
         except SSHException:
             print(Fore.RED + "=" * 89)
             print(f'SSH is not enabled on {ip}, please configure SSH!\n')
+            print("=" * 89 + "\n")
             print(Style.RESET_ALL)
 
         hostname = conn.get_hostname_ip()
@@ -278,8 +295,8 @@ with open(OpsTicketInfo, 'a') as f:
         print("Version: " + conn.version)
         f.write("Hostname: " + conn.hostname + "\n" + "Version: " + conn.version + "\n")
         version = conn.check_ios()
-        print("=" * 89 + "\n")
-        f.write("=" * 89 + "\n")
+        print("=" * 92 + "\n")
+        f.write("=" * 92 + "\n")
 
         from alive_progress import alive_bar; import time
         for total in 500, 0:#700, 400, 0:
@@ -287,7 +304,12 @@ with open(OpsTicketInfo, 'a') as f:
                 for _ in range(500):
                     time.sleep(.001)
                     bar()
-
+        """
+            All outputs are returned here as a tuples from core net_module API,
+            The first elements  are unparsed string with the network command and its output, and 
+            and the second elements are parsed for data manipulation has not network commands
+            but only the parsed output
+        """
         if 'cisco nexus' in version:
 
             #get vlan name on the fly automated way
@@ -342,49 +364,40 @@ with open(OpsTicketInfo, 'a') as f:
         elif 'cisco ios' in version:
 
             print("=" * 40 + " Getting Route Info " + "="*40  + "\n")
-            ip_route=conn.get_ip_route(src_ip)
-            print(conn.get_ip_route(src_ip))
+            f.write("=" * 40 + " Getting Route Info " + "="*40  + "\n")
+            # Getting the ip route + source IP address result from net Module Adaptive Concept Method
+            # and storing/displaying unparsed result and storing the result into file
+            ip_route=conn.get_ip_route(src_ip)[0]
+            print(ip_route)
+            f.write(ip_route)
 
-            print("=" * 40 + " Getting Vlan Info " + "="*40  + "\n")
-            f.write(conn.get_ip_route(src_ip) + "\n")
-            f.write("=" * 89 + "\n")
-
+            print("\n" + "=" * 40 + " Getting Vlan Info " + "="*40  + "\n")
+            f.write("\n" + "=" * 40 + " Getting Vlan Info " + "="*40  + "\n")
+            # Extracting Vlan name for vlan information Adaptive Concept Method
             vlan_name = conn.get_vlan_info(ip_route)
-            print(vlan_name)
-            f.write(vlan_name + "\n")
+            # Getting vlan configuration information unparsed and storing it
+            vlan_config= conn.get_vlan_config(vlan_name)[0]
+            print(vlan_config)
+            f.write(vlan_config + "\n")
 
-            print(conn.get_vlan_config(vlan_name))
-            f.write(conn.get_vlan_config(vlan_name) + "\n")
             print("=" * 89 + "\n")
             f.write("=" * 89 + "\n")
 
-            acl_name = conn.get_acl_name(vlan_name)
+            print("\n" + "=" * 40 + " Getting ACL Info " + "=" * 31 + "\n")
+            f.write("\n" + "=" * 40 + " Getting ACL Info " + "=" * 31 + "\n")
+            # Passing vlan config to get acl name method from network module to view existing entry for ACL's
+            acl_name = conn.get_acl_name(vlan_config)
+            # Storing the ACL name to file
             f.write(acl_name + "\n")
             print(conn.get_acl_config(acl_name))
-            f.write(conn.get_acl_config(acl_name))
-            print("=" * 89 + "\n")
-            f.write("=" * 89 + "\n")
-
-            print("=" * 40 + " NAPALM Testing " + "="* 39 + "\n")
-            f.write("=" * 40 + " NAPALM Testing " + "="* 39 + "\n")
-            nos = 'ios'
-            print(conn.config_rollback(nos))
-            f.write(conn.config_rollback(nos) + "\n")
-            print("=" * 89 + "\n")
-
-            print("=" * 40 + " Writing output to File " + "="* 31 + "\n")
-            f.write("=" * 40 + " Writing output to File " + "="* 31 + "\n")
-            output = conn.get_object_groups()
-            conn.write_output_to_file(output)
-            f.write(conn.write_output_to_file(output) + "\n")
-            print(conn.write_output_to_file(output))
+            # Storing the ACL config to a file unparsed result string
+            acl_config = conn.get_acl_config(acl_name)[0]
+            f.write(acl_config)
 
             print("=" * 40 + " Backing up Current Config " + "="* 22 + "\n")
             f.write("=" * 40 + " Backing up Current Config " + "="* 22 + "\n")
             current_config_backup = conn.current_config_backup()
-
             conn.current_config_backup()
-            f.write(conn.current_config_backup() + "\n")
             print(conn.current_config_backup())
             f.write(conn.current_config_backup()+ "\n")
             print("=" * 89 + "\n")
@@ -392,23 +405,53 @@ with open(OpsTicketInfo, 'a') as f:
 
             print("=" * 40 + " Generating ACL " + "="* 33 + "\n")
             f.write("=" * 40 + " Generating ACL " + "="* 33 + "\n")
-            gen = ACLGEN(src_ip,src_port,dst_ip,dst_port,protocol,action)
+            gen = ACLGEN(src_ip, src_port, dst_ip, dst_port, protocol, action)
+
             gen.acl()
             f.write(gen.acl() + "\n")
-            proposed_acl = gen.proposed_rule()
-            f.write(proposed_acl + "\n")
-            rollback_acl = gen.rollback_rule()
-            f.write(rollback_acl + "\n")
-            propose_rollback_plan = gen.file_combine()
-            f.write(propose_rollback_plan + "\n")
+
+            proposed_file = gen.proposed_rule()[0]
+            print(proposed_file)
+            f.write(proposed_file)
+            f.write("\n")
+            proposed_acl = gen.proposed_rule()[1]
+            f.write(str(gen.proposed_rule()) + "\n")
+
+            rollback_file = gen.rollback_rule()[0]
+            print(rollback_file)
+            rollback_acl = gen.rollback_rule()[1]
+            f.write(rollback_file)
+
+            f.write(str(gen.rollback_rule()) + "\n")
+
+            proposed_rollback_file = gen.file_combine()[0]
+            print(proposed_rollback_file)
+            proposed_rollback_plan = gen.file_combine()[2]
+            print(proposed_rollback_plan)
+            f.write(proposed_rollback_file)
+            f.write(str(gen.file_combine()) + "\n")
+
+            print("\n" + "=" * 40 + " Configuring ACL " + "=" * 33 + "\n")
+            f.write("\n" + "=" * 40 + " Configuring ACL " + "=" * 33 + "\n")
 
             config_acl = input(Fore.GREEN + "Do you want to configure proposed ACL [yes|no]? ")
+            int_vlan = "interface vlan 11"
+            cmd_list = [int_vlan, "ip access-list extended incoming_traffic", proposed_acl]
             if config_acl == 'yes' or config_acl == 'y':
-                print("\n" + "=" * 40 + " Configuring ACL " + "="* 40 + "\n" + Style.RESET_ALL)
-                conn.send_config_list(proposed_acl)
+                print("\n" + "=" * 40 + " Applying ACL " + "=" * 36 + "\n" + Style.RESET_ALL)
+                conn.config_command_lists(cmd_list)
                 print("ACL Configured")
+                conn.acl_config = conn.get_acl_config(acl_name)[0]
+                print(acl_config)
             else:
-                print("\n" + "=" * 40 + " No ACL is configured " + "="* 27 + "\n")
+                print("\n" + "=" * 40 + " No ACL is configured " + "=" * 27 + "\n")
+
+            if portopen.is_open() and portopen.check_host():
+                print(f'{dst_service_port} is open for {dst_ip}')
+                f.write(f'{dst_service_port} is open for {dst_ip}' + "\n")
+            else:
+                print(f'{dst_service_port} is not open for {dst_ip}')
+                f.write(f'{dst_service_port} is not open for {dst_ip}' + "\n")
 
             rollback = (Fore.RED + "Do you want to rollback the config [yes|no]? ")
             if rollback == 'yes' or rollback == 'y':
@@ -454,11 +497,6 @@ with open(OpsTicketInfo, 'a') as f:
         else:
             print("Version Not found, Please check the device!!")
 
-        rule = ACLGEN(src_ip, dst_ip, src_port, dst_port, protocol, action)
-        rule.acl()
-        rule.proposed_rule()
-        rule.rollback_rule()
-        rule.file_combine()
 
         print(f'Closing connection {ip}')
         f.write(f'Closing connection {ip}')

@@ -28,8 +28,8 @@ class ACLGEN:
     proposed_config_output =  f'ACL_proposed_{day}_{month}_{year}_{hour}_{minute}.txt'
     rollback_config_output =  f'ACL_rollback_{day}_{month}_{year}_{hour}_{minute}.txt'
     combine_config_output  =  f'ACL_configPlan_{day}_{month}_{year}_{hour}_{minute}.txt'
-    print("="*40 + " ACL Configuration Files Created " + "=" *22 + "\n")
-    print("\n"+ proposed_config_output + "\n" + rollback_config_output + "\n" + combine_config_output + "\n")
+    #print("="*40 + " ACL Configuration Files Created " + "=" *22)
+    #print("\n"+ proposed_config_output + "\n" + rollback_config_output + "\n" + combine_config_output + "\n")
 
     def __init__(self, src_ip, dst_ip, src_port, dst_port, protocol, action):
         """
@@ -131,7 +131,10 @@ class ACLGEN:
 
         with open(self.proposed_config_output, 'w') as f:
             proposed_config = f.write(self.acl())
-            return proposed_config
+            print(self.proposed_config_output)
+        with open(self.proposed_config_output, 'r') as fr:
+            acl_rule = fr.read()
+            return self.proposed_config_output, acl_rule, proposed_config
 
     def rollback_rule(self):
         """ This method creates a rollback plan from the proposed config rule, which can be used to rollback
@@ -143,10 +146,11 @@ class ACLGEN:
             rule = rule.strip()
             #print(rule)
         with open(self.rollback_config_output, 'w') as f:
-            rollback = 'no ' + rule
+            rollback_acl_rule = 'no ' + rule
             #print(rollback)
-            rollback_config = f.write(rollback)
-            return rollback_config
+            rollback_config = f.write(rollback_acl_rule)
+            #print(self.rollback_config_output)
+            return self.rollback_config_output, rollback_acl_rule, rollback_config
 
     def file_combine(self):
         """ This method creates a full config plan with proposal and the rollback plan,
@@ -166,9 +170,9 @@ class ACLGEN:
             output = f.write(file2)
         with open(self.combine_config_output, 'r') as fr:
             readfile = fr.read()
-            print(readfile+"\n")
-
-        return output
+            #print(self.combine_config_output + "\n")
+            #print(readfile+"\n")
+            return self.combine_config_output, output, readfile
 
 
 class CISCO(ACLGEN):
